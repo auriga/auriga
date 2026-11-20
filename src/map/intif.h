@@ -32,6 +32,8 @@ int intif_announce(const char* mes,size_t len,unsigned int color,int type,int si
 void intif_wis_message(struct map_session_data *sd, const char *nick, const char *mes, size_t mes_len);
 
 // アカウント変数関連
+int intif_cashshop_account_request(struct map_session_data *sd);
+int intif_cashshop_account_save(struct map_session_data *sd);
 int intif_saveaccountreg(struct map_session_data *sd);
 int intif_request_accountreg(struct map_session_data *sd);
 

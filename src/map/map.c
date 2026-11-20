@@ -1368,6 +1368,7 @@ int map_quit(struct map_session_data *sd)
 
 	npc_questinfo_cancel(sd);
 	searchstore_close(sd);
+	cashshop_account_close(sd);
 
 #ifdef DYNAMIC_SC_DATA
 	status_free_sc_data(&sd->sc);

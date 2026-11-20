@@ -291,6 +291,7 @@ static bool account_txt_read(void)
 	if( journal_setup( &login_journal, &login_journal_cfg, sizeof(struct mmo_account), login_journal_rollforward, "login_journal" ) )
 	{
 		account_txt_sync();
+		journal_require_ready(&login_journal, &login_journal_cfg);
 	}
 
 #endif
@@ -306,6 +307,12 @@ void account_txt_sync(void)
 {
 	FILE *fp;
 	int i, j, lock;
+
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(login_journal_cfg.enable && journal_checkpoint(&login_journal) != 0)
+		return;
+#endif
 
 	if( !auth_dat )
 		return;
@@ -335,7 +342,8 @@ void account_txt_sync(void)
 	}
 	fprintf(fp, "%d\t%%newid%%" NEWLINE, account_id_count);
 
-	lock_fclose(fp, account_filename, &lock);
+	if(lock_fclose_checked(fp, account_filename, &lock) != 0)
+		return;
 
 #ifdef TXT_JOURNAL
 	if( login_journal_cfg.enable )

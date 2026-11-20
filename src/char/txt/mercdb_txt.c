@@ -210,6 +210,7 @@ static bool mercdb_txt_read(void)
 	if( journal_setup( &merc_journal, &merc_journal_cfg, sizeof(struct mmo_mercstatus), merc_journal_rollforward, "inter: merc_journal" ) )
 	{
 		mercdb_txt_sync();
+		journal_require_ready(&merc_journal, &merc_journal_cfg);
 	}
 
 #endif
@@ -238,6 +239,12 @@ int mercdb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(merc_journal_cfg.enable && journal_checkpoint(&merc_journal) != 0)
+		return 1;
+#endif
+
 	if( !merc_db )
 		return 1;
 
@@ -246,7 +253,8 @@ int mercdb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(merc_db, mercdb_txt_sync_sub, fp);
-	lock_fclose(fp, merc_txt, &lock);
+	if(lock_fclose_checked(fp, merc_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( merc_journal_cfg.enable )

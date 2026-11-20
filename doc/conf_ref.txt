@@ -332,6 +332,34 @@ accreg_txt
 	ワールド内アカウント共有変数データを格納するファイル名です。
 	省略可能で、デフォルトは save/accreg.txt です。
 
+homun_txt
+	ホムンクルスデータを格納するファイル名です。
+	省略可能で、デフォルトは save/homun.txt です。
+
+status_txt
+	状態異常データを格納するファイル名です。
+	省略可能で、デフォルトは save/status.txt です。
+
+merc_txt
+	傭兵データを格納するファイル名です。
+	省略可能で、デフォルトは save/merc.txt です。
+
+quest_txt
+	クエストデータを格納するファイル名です。
+	省略可能で、デフォルトは save/quest.txt です。
+
+elem_txt
+	精霊データを格納するファイル名です。
+	省略可能で、デフォルトは save/elem.txt です。
+
+achieve_txt
+	実績データを格納するファイル名です。
+	省略可能で、デフォルトは save/achieve.txt です。
+
+cashshop_txt
+	アカウント限定キャッシュショップの購入履歴データを格納するファイル名です。
+	省略可能で、デフォルトは save/cashshop.txt です。
+
 party_share_level
 	公平分配パーティの制限レベルを設定します。
 	省略可能で、デフォルトは10です。
@@ -345,6 +373,32 @@ guild_extension_increment
 	ギルド拡張で 1Lv あたり最大人数が何人増えるかを設定します。
 	0 〜 6 で指定します。桜井は 6 のようです。
 	省略可能で、デフォルトは 4 です。
+
+mail_system_expire_days
+mail_return_days
+mail_delete_days
+mail_returned_expire_days
+	メールの送信時点から数えた保管日数です。0で期限を無効にします。
+	受信箱を開いたときに判定します。期限を過ぎた未開封のプレイヤーメールは
+	送信者に返送し、開封済みメールと返送済みメールは削除します。
+
+mail_expire_check_interval
+	メールの期限を定期確認する間隔を秒で指定します。初期値0では定期確認を行いません。
+	1回につき受信箱を1件確認し、期限切れメールを最大1通処理します。
+	全受信箱の確認にかかる時間は受信箱の数と設定間隔に応じて変わります。
+	受信箱を開いたときの期限判定はこの設定に関係なく行います。
+
+mail_system_expire_action
+	期限切れのシステムメールを削除する場合は0、保持する場合は1を指定します。
+
+mail_return_keep_attach
+	返送時に添付を破棄する場合は0、保持する場合は1を指定します。
+
+mail_zeny_fee
+	添付Zenyに対する手数料をパーセントで指定します。端数は切り捨てます。
+
+mail_attachment_price
+	添付するアイテム1枠ごとの手数料をZenyで指定します。
 
 inter_log_filename
 	インターサーバーのログファイルを指定します。
@@ -378,7 +432,29 @@ castle_journal_cache_interval
 pet_journal_enable
 pet_journal_file
 pet_journal_cache_interval
-	アカウント変数、パーティー、ギルド、ギルド倉庫、ギルド城、ペットの
+homun_journal_enable
+homun_journal_file
+homun_journal_cache_interval
+status_journal_enable
+status_journal_file
+status_journal_cache_interval
+merc_journal_enable
+merc_journal_file
+merc_journal_cache_interval
+quest_journal_enable
+quest_journal_file
+quest_journal_cache_interval
+elem_journal_enable
+elem_journal_file
+elem_journal_cache_interval
+achieve_journal_enable
+achieve_journal_file
+achieve_journal_cache_interval
+cashshop_journal_enable
+cashshop_journal_file
+cashshop_journal_cache_interval
+	アカウント変数、パーティー、ギルド、ギルド倉庫、ギルド城、ペット、
+	ホムンクルス、状態異常、傭兵、クエスト、精霊、実績、キャッシュショップの
 	ジャーナルに関する設定
 
 import
@@ -397,38 +473,7 @@ party_share_level: 10
 guild_join_limit: 1
 guild_extension_increment: 4
 
-mail_system_expire_days
-mail_return_days
-mail_delete_days
-mail_returned_expire_days
-	メールの送信時点から数えた保管日数です。0で期限を無効にします。
-	受信箱を開いたときに判定します。期限を過ぎた未開封のプレイヤーメールは
-	送信者に返送し、開封済みメールと返送済みメールは削除します。
 
-mail_expire_check_interval
-	メールの期限を定期確認する間隔を秒で指定します。初期値0では定期確認を行いません。
-	1回につき受信箱を1件確認し、期限切れメールを最大1通処理します。
-	全受信箱の確認にかかる時間は受信箱の数と設定間隔に応じて変わります。
-	受信箱を開いたときの期限判定はこの設定に関係なく行います。
-
-mail_system_expire_action
-	期限切れのシステムメールを削除する場合は0、保持する場合は1を指定します。
-
-mail_return_keep_attach
-	返送時に添付を破棄する場合は0、保持する場合は1を指定します。
-
-conf/battle_auriga.conf の mail_player_attach
-	プレイヤー間のアイテムとZenyの添付を許可します。既定値はyesです。
-
-mail_zeny_fee
-	添付Zenyに対する手数料をパーセントで指定します。端数は切り捨てます。
-
-mail_attachment_price
-	添付するアイテム1枠ごとの手数料をZenyで指定します。
-
-mail_attachment_weight
-	添付アイテムの合計重量上限をクライアント表示単位で指定します。
-	これらの設定はconf/battle_auriga.confにあり、既定値0は無効です。
 inter_log_file: log/inter.log
 
 

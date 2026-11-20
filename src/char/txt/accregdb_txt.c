@@ -187,6 +187,7 @@ static bool accregdb_txt_read(void)
 	if( journal_setup( &accreg_journal, &accreg_journal_cfg, sizeof(struct accreg), accregdb_journal_rollforward, "inter: accreg_journal" ) )
 	{
 		accregdb_txt_sync();
+		journal_require_ready(&accreg_journal, &accreg_journal_cfg);
 	}
 
 #endif
@@ -217,6 +218,12 @@ int accregdb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(accreg_journal_cfg.enable && journal_checkpoint(&accreg_journal) != 0)
+		return 1;
+#endif
+
 	if( !accreg_db )
 		return 1;
 
@@ -225,7 +232,8 @@ int accregdb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(accreg_db, accregdb_txt_sync_sub, fp);
-	lock_fclose(fp, accreg_txt, &lock);
+	if(lock_fclose_checked(fp, accreg_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( accreg_journal_cfg.enable )

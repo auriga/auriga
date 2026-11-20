@@ -105,3 +105,23 @@ Developer Command Prompt、または vcvars64.bat 適用後:
 
 Makefile 側はパターンルール化済み。bat 側は for ループで
 ソース一覧を1か所に寄せている。
+
+ジャーナルの回帰テスト
+
+　test_journal.cは独立したjournal_tests実行ファイルとしてビルドする。
+　TXT_JOURNALを有効にし、タイマー・CRCのテスト用実装を使用する。
+　make test / vc_test.batで通常テストの後に実行する。
+　書込み失敗、flush失敗、厳格復旧、従来の復旧、同一時刻の更新、削除を検証する。
+　flush失敗はジャーナルのテスト用オブジェクトだけでfflush・fwrite・fcloseを差し替えて注入する。
+　秒境界や時計後退を再現するため、同オブジェクトの時刻取得箇所のみJOURNAL_TIME_SOURCEで差し替える。
+　ファイルサイズ取得失敗はJOURNAL_TELL_SOURCE、早すぎるEOFはJOURNAL_READ_SOURCEで注入する。
+
+購入履歴のジャーナル結合テスト
+
+　test_cashshop_journal.cをjournal_testsへ追加し、TXT_JOURNAL有効時の実保存処理を検証する。
+　再起動、世代更新、複合キー、旧TXT、無効化時の復旧、保存失敗、破損時の販売停止を確認する。
+　通常テスト側ではTXT_JOURNAL無効時に未反映ジャーナルを拒否することを確認する。
+
+　POSIX専用の権限・シンボリックリンク検証はWindowsでは対象外として扱う。
+
+　Linux専用でアクセスACLの全内容の保持と、不要な継承ACLの除去を検証する。

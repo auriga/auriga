@@ -226,6 +226,7 @@ static bool partydb_txt_read(void)
 	if( journal_setup( &party_journal, &party_journal_cfg, sizeof(struct party), party_journal_rollforward, "inter: party_journal" ) )
 	{
 		partydb_txt_sync();
+		journal_require_ready(&party_journal, &party_journal_cfg);
 	}
 
 #endif
@@ -254,6 +255,12 @@ int partydb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(party_journal_cfg.enable && journal_checkpoint(&party_journal) != 0)
+		return 1;
+#endif
+
 	if( !party_db )
 		return 1;
 
@@ -262,7 +269,8 @@ int partydb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(party_db, partydb_txt_sync_sub, fp);
-	lock_fclose(fp, party_txt, &lock);
+	if(lock_fclose_checked(fp, party_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( party_journal_cfg.enable )

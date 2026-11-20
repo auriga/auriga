@@ -260,6 +260,12 @@ int storagedb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(storage_journal_cfg.enable && journal_checkpoint(&storage_journal) != 0)
+		return 1;
+#endif
+
 	if( !storage_db )
 		return 1;
 
@@ -268,7 +274,8 @@ int storagedb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(storage_db, storagedb_txt_sync_sub, fp);
-	lock_fclose(fp, storage_txt, &lock);
+	if(lock_fclose_checked(fp, storage_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( storage_journal_cfg.enable )
@@ -498,6 +505,12 @@ int gstoragedb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(guild_storage_journal_cfg.enable && journal_checkpoint(&guild_storage_journal) != 0)
+		return 1;
+#endif
+
 	if( !gstorage_db )
 		return 1;
 
@@ -506,7 +519,8 @@ int gstoragedb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(gstorage_db, gstoragedb_txt_sync_sub, fp);
-	lock_fclose(fp, guild_storage_txt, &lock);
+	if(lock_fclose_checked(fp, guild_storage_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( guild_storage_journal_cfg.enable )
@@ -663,6 +677,7 @@ static bool storagedb_txt_read(void)
 	if( journal_setup( &storage_journal, &storage_journal_cfg, sizeof(struct storage), storage_journal_rollforward, "inter: storage_journal" ) )
 	{
 		storagedb_txt_sync();
+		journal_require_ready(&storage_journal, &storage_journal_cfg);
 	}
 
 #endif
@@ -711,6 +726,7 @@ static bool gstoragedb_txt_read(void)
 	if( journal_setup( &guild_storage_journal, &guild_storage_journal_cfg, sizeof(struct guild_storage), guild_storage_journal_rollforward, "inter: guild_storage_journal" ) )
 	{
 		gstoragedb_txt_sync();
+		journal_require_ready(&guild_storage_journal, &guild_storage_journal_cfg);
 	}
 
 #endif

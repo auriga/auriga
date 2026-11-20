@@ -367,3 +367,12 @@ S 3093 <len>.w <account_id>.l <message>.?B
 	account_idにmessageを送信
 R 3893 <len>.w <account_id>.l <message>.?B
 	account_idにmessageを送信
+
+S 3094 <len>.w <account_id>.l <char_id>.l <token>.l { <sale_id>.l }*
+	アカウント限定商品の購入履歴要求。最大256販売枠。
+R 3894 <len>.w <account_id>.l <char_id>.l <token>.l <ok>.B { <sale_id>.l <purchased>.l }*
+	要求順の履歴を返します。未購入は0。失敗時ok=0で明細なし。
+S 3095 <len>.w <account_id>.l <char_id>.l <token>.l { <sale_id>.l <purchased>.l }*
+	累積購入数の保存。以前より小さい値では巻き戻しません。
+R 3895 <account_id>.l <char_id>.l <token>.l <ok>.B
+	購入履歴保存結果。失敗時は限定商品の追加購入を停止します。

@@ -459,6 +459,9 @@
     <ClInclude Include="..\src\common\mmo.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\common\cashshop_data.h">
+      <Filter>common</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\common\nullpo.h">
       <Filter>common</Filter>
     </ClInclude>

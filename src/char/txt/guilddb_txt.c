@@ -20,6 +20,7 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -38,6 +39,9 @@ static int guildcastle_txt_sync(void);
 
 static int guild_newid=10000;
 static char guild_txt[1024]  = "save/guild.txt";
+static int castle_ready;
+static int guilddb_txt_sync_main(void);
+
 static char castle_txt[1024] = "save/castle.txt";
 
 #ifdef TXT_JOURNAL
@@ -424,7 +428,8 @@ static bool guilddb_txt_read(void)
 #ifdef TXT_JOURNAL
 	if( journal_setup( &guild_journal, &guild_journal_cfg, sizeof(struct guild), guild_journal_rollforward, "int_guild: guild_journal" ) )
 	{
-		guilddb_txt_sync();
+		guilddb_txt_sync_main();
+		journal_require_ready(&guild_journal, &guild_journal_cfg);
 	}
 
 #endif
@@ -461,10 +466,16 @@ static int guilddb_txt_sync_sub(void *key, void *data, va_list ap)
 	return 0;
 }
 
-int guilddb_txt_sync(void)
+static int guilddb_txt_sync_main(void)
 {
 	FILE *fp;
 	int lock;
+
+#ifdef TXT_JOURNAL
+	/* 保存失敗後にTXTだけを進め、古い履歴で巻き戻すことを防ぐ。 */
+	if(guild_journal_cfg.enable && journal_checkpoint(&guild_journal) != 0)
+		return 1;
+#endif
 
 	if( !guild_db )
 		return 1;
@@ -474,7 +485,8 @@ int guilddb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(guild_db, guilddb_txt_sync_sub, fp);
-	lock_fclose(fp, guild_txt, &lock);
+	if(lock_fclose_checked(fp, guild_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( guild_journal_cfg.enable )
@@ -484,8 +496,15 @@ int guilddb_txt_sync(void)
 	}
 #endif
 
-	guildcastle_txt_sync();
 	return 0;
+}
+
+int guilddb_txt_sync(void)
+{
+	/* 一方の保存失敗で、もう一方の同期を省略しない。 */
+	int guild_result = guilddb_txt_sync_main();
+	int castle_result = guildcastle_txt_sync();
+	return guild_result ? guild_result : castle_result;
 }
 
 /*==========================================
@@ -715,8 +734,9 @@ static bool guildcastle_txt_read(void)
 	}
 
 	if((fp = fopen(castle_txt, "r")) == NULL) {
-		printf("guildcastle_txt_read: open [%s] failed !\n", castle_txt);
-		ret = false;
+		ret = errno == ENOENT;
+		if(!ret)
+			printf("guildcastle_txt_read: open [%s] failed !\n", castle_txt);
 	} else {
 		struct guild_castle gc;
 		int count = 0;
@@ -730,13 +750,23 @@ static bool guildcastle_txt_read(void)
 			}
 			count++;
 		}
-		fclose(fp);
+		if(ferror(fp)) ret = false;
+		if(fclose(fp) != 0) ret = false;
 	}
+
+	if(!ret) {
+		/* 差分ジャーナルだけで読込みに失敗した基底TXTを上書きしない。 */
+		printf("guildcastle: base TXT read failed; recovery stopped\n");
+		abort();
+	}
+	castle_ready = 1;
 
 #ifdef TXT_JOURNAL
 	if( journal_setup( &guildcastle_journal, &guildcastle_journal_cfg, sizeof(struct guild_castle), guildcastle_journal_rollforward, "int_guild: castle_journal" ) )
 	{
+		castle_ready = 1;
 		guildcastle_txt_sync();
+		journal_require_ready(&guildcastle_journal, &guildcastle_journal_cfg);
 	}
 
 #endif
@@ -753,6 +783,15 @@ static int guildcastle_txt_sync(void)
 	int i, lock;
 	char line[1024];
 
+	if(!castle_ready)
+		return 1;
+
+#ifdef TXT_JOURNAL
+	/* 保存失敗後にTXTだけを進め、古い履歴で巻き戻すことを防ぐ。 */
+	if(guildcastle_journal_cfg.enable && journal_checkpoint(&guildcastle_journal) != 0)
+		return 1;
+#endif
+
 	if( (fp = lock_fopen(castle_txt, &lock)) == NULL ) {
 		printf("guildcastle_txt_sync: can't write [%s] !!! data is lost !!!\n", castle_txt);
 		return 1;
@@ -762,7 +801,8 @@ static int guildcastle_txt_sync(void)
 		guildcastle_tostr(line, &castle_db[i]);
 		fprintf(fp, "%s" NEWLINE, line);
 	}
-	lock_fclose(fp, castle_txt, &lock);
+	if(lock_fclose_checked(fp, castle_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( guildcastle_journal_cfg.enable )

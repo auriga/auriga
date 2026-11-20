@@ -20,6 +20,7 @@
  */
 
 #include <stdio.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -693,6 +694,26 @@ static int luafunc_InsertCashshopItem(lua_State *NL)
 	return 1;
 }
 
+/* 日時はクライアントと同じ符号なし32ビットのUNIX時刻を受け取る。 */
+static int luafunc_InsertCashshopAccountItem(lua_State *NL)
+{
+	int sale_id = luaL_checkint(NL, 1);
+	int nameid = luaL_checkint(NL, 2);
+	int price = luaL_checkint(NL, 3);
+	lua_Number limit = luaL_checknumber(NL, 4);
+	lua_Number start = luaL_checknumber(NL, 5);
+	lua_Number end = luaL_checknumber(NL, 6);
+	int result = 0;
+
+	if(limit >= 1 && limit <= INT_MAX && start >= 1 && start <= UINT_MAX &&
+	   end >= 1 && end <= UINT_MAX && limit == (unsigned int)limit &&
+	   start == (unsigned int)start && end == (unsigned int)end)
+		result = cashshop_account_insert(sale_id, nameid, price, (unsigned int)limit,
+			(unsigned int)start, (unsigned int)end);
+	lua_pushboolean(NL, result);
+	return 1;
+}
+
 static int luafunc_ClearStylist(lua_State *NL)
 {
 	stylist_clear();
@@ -721,6 +742,7 @@ const struct Lua_function luafunc[] = {
 	{"InsertAchieveLevelDB",luafunc_InsertAchieveLevelDB},
 
 	{"ClearCashshop",luafunc_ClearCashshop},
+	{"InsertCashshopAccountItem",luafunc_InsertCashshopAccountItem},
 	{"InsertCashshopItem",luafunc_InsertCashshopItem},
 	{"ClearStylist",luafunc_ClearStylist},
 	{"InsertStylistEntry",luafunc_InsertStylistEntry},

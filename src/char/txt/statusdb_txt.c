@@ -206,6 +206,7 @@ static bool statusdb_txt_read(void)
 	if( journal_setup( &status_journal, &status_journal_cfg, sizeof(struct scdata), status_journal_rollforward, "inter: status_journal" ) )
 	{
 		statusdb_txt_sync();
+		journal_require_ready(&status_journal, &status_journal_cfg);
 	}
 
 #endif
@@ -237,6 +238,12 @@ int statusdb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(status_journal_cfg.enable && journal_checkpoint(&status_journal) != 0)
+		return 1;
+#endif
+
 	if( !scdata_db )
 		return 1;
 
@@ -245,7 +252,8 @@ int statusdb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(scdata_db, statusdb_txt_sync_sub, fp);
-	lock_fclose(fp, scdata_txt, &lock);
+	if(lock_fclose_checked(fp, scdata_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( status_journal_cfg.enable )

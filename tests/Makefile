@@ -23,6 +23,7 @@ TEST_SRCS = \
 	test_status_calc_ctrl.c \
 	test_pc_ui.c \
 	test_cashshop.c \
+	test_account_cashshop.c \
 	test_stylist.c \
 	test_searchstore.c \
 	test_grf_protected.c
@@ -40,7 +41,7 @@ MAP_STYLIST_OBJ = stylist.o
 TEST_OBJS = $(TEST_SRCS:.c=.o)
 STUB_OBJS = $(STUB_SRCS:.c=.o)
 COMMON_OBJS = $(addsuffix .o,$(COMMON_NAMES))
-LOCAL_OBJS = $(TEST_OBJS) $(STUB_OBJS) $(COMMON_OBJS) $(MAP_CTRL_OBJ) $(MAP_UI_OBJ) $(MAP_CASH_OBJ) $(MAP_STYLIST_OBJ) searchstore.o lz4.o unity.o
+LOCAL_OBJS = $(TEST_OBJS) $(STUB_OBJS) $(COMMON_OBJS) $(MAP_CTRL_OBJ) $(MAP_UI_OBJ) $(MAP_CASH_OBJ) $(MAP_STYLIST_OBJ) searchstore.o cashshopdb_txt.o lz4.o unity.o
 
 TARGET = unit_tests
 
@@ -48,8 +49,9 @@ TARGET = unit_tests
 
 all: test
 
-test: $(TARGET)
+test: $(TARGET) journal_tests
 	./$(TARGET)
+	./journal_tests
 
 $(TARGET): $(LOCAL_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(LOCAL_OBJS)
@@ -78,6 +80,9 @@ $(MAP_STYLIST_OBJ): ../src/map/stylist.c
 searchstore.o: ../src/map/searchstore.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+cashshopdb_txt.o: ../src/char/txt/cashshopdb_txt.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 lz4.o: $(LZ4_DIR)/lz4.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
@@ -85,4 +90,10 @@ unity.o: $(UNITY_DIR)/unity.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(TARGET) $(LOCAL_OBJS)
+	rm -f $(TARGET) journal_tests journal_engine_test.o $(LOCAL_OBJS)
+
+journal_tests: test_journal.c test_cashshop_journal.c ../src/char/txt/cashshopdb_txt.c journal_engine_test.o $(COMMON_DIR)/lock.c $(COMMON_DIR)/db.c $(COMMON_DIR)/utils.c $(COMMON_DIR)/nullpo.c stubs/malloc_stub.c $(UNITY_DIR)/unity.c
+	$(CC) $(CFLAGS) -DTXT_JOURNAL -o $@ $^
+
+journal_engine_test.o: $(COMMON_DIR)/journal.c $(COMMON_DIR)/journal.h
+	$(CC) $(CFLAGS) -DTXT_JOURNAL -Dfflush=journal_test_fflush -Dfwrite=journal_test_fwrite -Dfclose=journal_test_fclose -DJOURNAL_TIME_SOURCE=journal_test_time -DJOURNAL_TELL_SOURCE=journal_test_tell -DJOURNAL_READ_SOURCE=journal_test_read -c -o $@ $<

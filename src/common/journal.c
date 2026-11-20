@@ -21,10 +21,19 @@
 
 #ifdef TXT_JOURNAL
 
+#if !defined(_WIN32) && !defined(_POSIX_C_SOURCE)
+#define _POSIX_C_SOURCE 200809L
+#endif
+#if defined(__APPLE__) && !defined(_DARWIN_C_SOURCE)
+#define _DARWIN_C_SOURCE 1
+#endif
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <limits.h>
 
 #include "journal.h"
+#include "lock.h"
 #include "malloc.h"
 #include "timer.h"
 #include "grfio.h"
@@ -32,6 +41,15 @@
 
 #ifndef WINDOWS
 #	include <unistd.h>
+#	include <sys/stat.h>
+#	include <fcntl.h>
+#	if defined(__linux__)
+#		include <sys/xattr.h>
+#	elif defined(__APPLE__)
+#		include <sys/acl.h>
+#	elif defined(__CYGWIN__) || defined(__FreeBSD__)
+#		include <sys/acl.h>
+#	endif
 #endif
 
 #define UNUSEDCHUNK_DEFAULT_QUEUESIZE	256		// キューの最小サイズ ( 2 の累乗であること )
@@ -42,6 +60,47 @@
 
 
 #define JOURNAL_IDENTIFIER	"AURIGA_JOURNAL20"	// 識別子（ファイル構造を変えたら、最後の数値を変えるべき）
+
+/* Windowsのlongは32bitのため、ファイル位置だけ64bit APIを使う。 */
+static int journal_seek(FILE *fp, uint64 offset, int origin)
+{
+#ifdef WINDOWS
+	return _fseeki64(fp, (__int64)offset, origin);
+#else
+	if(offset > LONG_MAX)
+		return -1;
+	return fseek(fp, (long)offset, origin);
+#endif
+}
+
+#ifdef JOURNAL_TELL_SOURCE
+extern long long JOURNAL_TELL_SOURCE(FILE *fp);
+#endif
+static long long journal_tell(FILE *fp)
+{
+#ifdef JOURNAL_TELL_SOURCE
+	return JOURNAL_TELL_SOURCE(fp);
+#else
+#ifdef WINDOWS
+	return _ftelli64(fp);
+#else
+	return ftell(fp);
+#endif
+#endif
+}
+
+/* テスト時もUCRTのtime定義自体は変更しない。 */
+#ifdef JOURNAL_TIME_SOURCE
+extern time_t JOURNAL_TIME_SOURCE(time_t *result);
+#else
+#define JOURNAL_TIME_SOURCE time
+#endif
+
+#ifdef JOURNAL_READ_SOURCE
+extern size_t JOURNAL_READ_SOURCE(void *buf, size_t size, size_t count, FILE *fp);
+#else
+#define JOURNAL_READ_SOURCE fread
+#endif
 
 static int journal_first = 1;
 
@@ -72,9 +131,97 @@ static void journal_init_( struct journal* j, size_t datasize, const char* filen
 // ==========================================
 // ジャーナルの初期化
 // ------------------------------------------
-void journal_create( struct journal* j, size_t datasize, int cache_interval, const char* filename )
+#ifndef WINDOWS
+/* modeのグループ欄はACLマスクの場合があるため、ACLも引き継ぐ。 */
+static int journal_copy_acl(const char *source, int destination, mode_t mode)
+{
+#if defined(__linux__)
+	const char *attribute = "system.posix_acl_access";
+	if(source) {
+		ssize_t nfs_acl = getxattr(source, "system.nfs4_acl", NULL, 0);
+		if(nfs_acl >= 0 || (errno != ENODATA && errno != ENOTSUP))
+			return 0;
+	}
+	{
+		ssize_t nfs_acl = fgetxattr(destination, "system.nfs4_acl", NULL, 0);
+		if(nfs_acl >= 0 || (errno != ENODATA && errno != ENOTSUP))
+			return 0;
+	}
+	if(source) {
+		ssize_t length = getxattr(source, attribute, NULL, 0);
+		if(length >= 0) {
+			void *value;
+			int result;
+			if(length == 0) return 0;
+			value = aMalloc((size_t)length);
+			result = getxattr(source, attribute, value, (size_t)length) == length &&
+			         fsetxattr(destination, attribute, value, (size_t)length, 0) == 0;
+			aFree(value);
+			return result;
+		}
+		if(errno != ENODATA)
+			return 0;
+	}
+	/* 元にACLがない場合だけ、継承ACLを除去してからmodeを設定する。 */
+	if(fremovexattr(destination, attribute) != 0 && errno != ENODATA)
+		return 0;
+	return fchmod(destination, mode) == 0;
+#elif defined(__APPLE__)
+	acl_t acl = NULL;
+	int result;
+	if(source) {
+		filesec_t security = filesec_init();
+		struct stat info;
+		int fd;
+		if(!security) return 0;
+		fd = open(source, O_RDONLY);
+		if(fd < 0) { filesec_free(security); return 0; }
+		result = fstatx_np(fd, &info, security) == 0;
+		if(result && filesec_get_property(security, FILESEC_ACL, &acl) != 0 && errno != ENOENT)
+			result = 0;
+		filesec_free(security);
+		if(close(fd) != 0) result = 0;
+		if(!result) { if(acl) acl_free(acl); return 0; }
+	}
+	if(!acl) acl = acl_init(0);
+	if(!acl) return 0;
+	result = acl_set_fd(destination, acl) == 0;
+	acl_free(acl);
+	return result && fchmod(destination, mode) == 0;
+#elif defined(__CYGWIN__) || defined(__FreeBSD__)
+#if defined(__FreeBSD__) && !defined(_PC_ACL_NFS4)
+	/* 定数が非公開でも既存のジャーナルのビルドを妨げない。 */
+	return 0;
+#else
+#ifdef __FreeBSD__
+	/* 原子的作成のNFSv4 ACL対応は今回の対象外。従来APIには影響しない。 */
+	if(fpathconf(destination, _PC_ACL_NFS4) != 0)
+		return 0;
+#endif
+	(void)mode;
+	acl_t acl = source ? acl_get_file(source, ACL_TYPE_ACCESS) : acl_from_text("u::rw-,g::---,o::---");
+	int result;
+	if(!acl) return 0;
+	result = acl_set_fd(destination, acl) == 0;
+	acl_free(acl);
+	return result;
+#endif
+#else
+	/* ACLを確認できない環境で、既存のアクセス制限を広げない。 */
+	return 0;
+#endif
+}
+#endif
+
+static int journal_create_internal(struct journal *j, size_t datasize, int cache_interval, const char *filename, int atomic)
 {
 	static int first = 1;
+	int lock;
+	char temporary[2048];
+#ifndef WINDOWS
+	struct stat previous;
+	int had_file = 0;
+#endif
 
 	// 最初なら関数名登録
 	if( first )
@@ -84,18 +231,94 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 	}
 
 	journal_init_( j, datasize, filename );
+	j->atomic_create = atomic;
+#ifndef WINDOWS
+	if(atomic) {
+		had_file = lstat(filename, &previous) == 0;
+		if((had_file && S_ISLNK(previous.st_mode)) || (!had_file && errno != ENOENT)) {
+			printf("journal: cannot replace journal path [%s]\n", filename);
+			j->io_error = 1;
+			return 0;
+		}
+	}
+#endif
 
 	// ファイルヘッダの設定
 	memcpy( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) );
 	j->fhd.datasize = (unsigned int)datasize;
 
-	// ファイルを作ってヘッダ書き込み
-	if( ( j->fp = fopen( filename, "w+b" ) ) == NULL )
-	{
-		printf("journal: fopen [%s]: failed\n", filename );
-		exit(1);
+	if(atomic) {
+		/* 完成した新世代ヘッダだけを正式名へ切り替える。 */
+		j->fp = lock_fopen_binary(filename, &lock);
+		if(!j->fp) {
+			printf("journal: temporary file creation failed [%s]\n", filename);
+			j->io_error = 1;
+			return 0;
+		}
+		snprintf(temporary, sizeof(temporary), "%s_%04d.tmp", filename, lock);
+		if(fwrite(&j->fhd, sizeof(j->fhd), 1, j->fp) != 1 || fflush(j->fp) != 0) {
+			printf("journal: header write failed [%s]\n", filename);
+			j->io_error = 1;
+			fclose(j->fp);
+			j->fp = NULL;
+			remove(temporary);
+			return 0;
+		}
+#ifndef WINDOWS
+		if(had_file) {
+			struct stat temporary_stat;
+			int fd = fileno(j->fp), failed = fstat(fd, &temporary_stat) != 0;
+			if(!failed && (temporary_stat.st_uid != previous.st_uid || temporary_stat.st_gid != previous.st_gid))
+				failed = fchown(fd, previous.st_uid, previous.st_gid) != 0;
+			if(failed) {
+				j->io_error = 1;
+				fclose(j->fp);
+				j->fp = NULL;
+				remove(temporary);
+				return 0;
+			}
+		}
+#endif
+#ifndef WINDOWS
+		if(!journal_copy_acl(had_file ? filename : NULL, fileno(j->fp), had_file ? previous.st_mode & 0777 : 0600)) {
+			printf("journal: cannot preserve ACL [%s]\n", filename);
+			j->io_error = 1;
+			fclose(j->fp);
+			j->fp = NULL;
+			remove(temporary);
+			return 0;
+		}
+#endif
+		{
+			FILE *fp = j->fp;
+			j->fp = NULL;
+			if(lock_fclose_checked(fp, filename, &lock) != 0) {
+				j->io_error = 1;
+				return 0;
+			}
+		}
+		j->fp = fopen(filename, "r+b");
+		if(!j->fp) {
+			j->io_error = 1;
+			return 0;
+		}
+
+	} else {
+		/* 従来のジャーナルは実体・ACL等を変えない直接作成を維持する。 */
+		j->fp = fopen(filename, "w+b");
+		if(!j->fp) {
+			printf("journal: fopen [%s]: failed\n", filename);
+			j->io_error = 1;
+			return 0;
+		}
+		if(fwrite(&j->fhd, sizeof(j->fhd), 1, j->fp) != 1 || fflush(j->fp) != 0) {
+			printf("journal: header write failed [%s]\n", filename);
+			j->io_error = 1;
+			fclose(j->fp);
+			j->fp = NULL;
+			return 0;
+		}
 	}
-	fwrite( &j->fhd, sizeof(j->fhd), 1, j->fp );
 
 	// キャッシュするならタイマー設定
 	if( cache_interval > 0)
@@ -103,6 +326,18 @@ void journal_create( struct journal* j, size_t datasize, int cache_interval, con
 		j->cache_timer = add_timer_interval( gettick()+ atn_rand()%cache_interval + cache_interval,
 											 journal_flush_timer, 0, j, cache_interval);
 	}
+	return 1;
+}
+
+int journal_create_checked(struct journal *j, size_t size, int cache, const char *file)
+{
+	return journal_create_internal(j, size, cache, file, 1);
+}
+
+void journal_create(struct journal *j, size_t size, int cache, const char *file)
+{
+	if(!journal_create_internal(j, size, cache, file, 0))
+		exit(1);
 }
 
 // ==========================================
@@ -162,6 +397,8 @@ static int journal_final_sub( void* key, void* data, va_list ap )
 // ------------------------------------------
 void journal_final( struct journal* j )
 {
+	/* TXT同期が失敗していた場合は、最終flushが成功しても復旧用に残す。 */
+	int preserve = j->io_error || j->needs_sync;
 	if( journal_first )
 	{
 		// ジャーナルは一度も初期化されてないので何もしない
@@ -184,7 +421,8 @@ void journal_final( struct journal* j )
 	// ファイルを閉じる
 	if( j->fp )
 	{
-		fclose( j->fp );
+		if(fclose(j->fp) != 0)
+			j->io_error = 1;
 		j->fp = NULL;
 	}
 
@@ -202,8 +440,16 @@ void journal_final( struct journal* j )
 		j->unusedchunk_size = 0;
 	}
 
+#ifndef WINDOWS
+	/* 稼働中にリンクへ差し替えられても、リンク自体は削除しない。 */
+	{
+		struct stat path_stat;
+		if(j->atomic_create && j->filename[0] && lstat(j->filename, &path_stat) == 0 && S_ISLNK(path_stat.st_mode))
+			preserve = 1;
+	}
+#endif
 	// ファイルの削除
-	if( j->mode==0 && j->filename[0] )
+	if( j->mode==0 && !preserve && !j->io_error && j->filename[0] )
 #ifdef JOURNAL_DEBUG
 	{
 		char newname[1040], newname2[1040];
@@ -227,13 +473,14 @@ int journal_write( struct journal* j, int key, const void* data )
 {
 	struct journal_data* dat;
 
-	if( !j->db )
+	if( !j->db || !j->fp || j->mode != 0 )
 	{
 		printf("journal_write: error: journal not ready\n");
 		return 0;
 	}
 
 	dat = (struct journal_data*)numdb_search( j->db, key );
+	j->needs_sync = 1;
 
 	// ジャーナルデータの登録
 	if( !dat )
@@ -262,9 +509,9 @@ int journal_write( struct journal* j, int key, const void* data )
 	}
 
 	// キャッシュしないならすぐにファイルに書き込む
-	if( j->cache_timer==-1 )
+	if( j->cache_timer==-1 || j->io_error )
 	{
-		journal_flush( j );
+		return journal_flush(j) == 0;
 	}
 
 	return 1;
@@ -280,52 +527,60 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 	time_t timestamp  = va_arg( ap, time_t );
 	struct journal_data* dat = (struct journal_data*)data;
 	struct journal_header jhd;
-	int old_idx = dat->idx;
+	int target;
 
 	// キャッシュデータはないので飛ばす
-	if( !dat->buf )
-	{
+	if(!dat->buf || j->io_error)
 		return 0;
-	}
 
 	// ファイル中の位置を強制的に置き換えるのは、このデータの書き込み中に
 	// 問題が起こった時に、以前の書き込みデータを生かせるようにする為です。
-	if( j->unusedchunk_read != j->unusedchunk_write )
+	if(dat->pending_idx > 0) {
+		/* 再試行は未確定チャンクを使い、欠落領域を作らない。 */
+		target = dat->pending_idx;
+	}
+	else if( j->unusedchunk_read != j->unusedchunk_write )
 	{
 		// 空きチャンクから取り出す
-		dat->idx = j->unusedchunk_queue[ j->unusedchunk_read ++ ];
+		target = j->unusedchunk_queue[ j->unusedchunk_read ++ ];
 		j->unusedchunk_read %= j->unusedchunk_size;
 	}
 	else
 	{
 		// 空きがないので新しく作る
-		dat->idx = (int)( j->nextchunk ++ );
+		if(j->nextchunk > INT_MAX || (uint64)j->nextchunk > (uint64)LLONG_MAX / j->chunksize) {
+			j->io_error = 1;
+			return 0;
+		}
+		target = (int)( j->nextchunk ++ );
 	}
+
+	dat->pending_idx = target;
 
 	// ジャーナル書き込み用のヘッダ設定
 	jhd.key = PTR2INT(key);
-	jhd.timestamp = timestamp;
+	/* 同一ミリ秒・時刻補正後でも同じキーの新旧を区別する。 */
+	jhd.timestamp = timestamp < dat->timestamp ? dat->timestamp : timestamp;
 	jhd.tick = tick;
+	if(dat->written && DIFF_TICK(jhd.tick, dat->tick) <= 0)
+		jhd.tick = dat->tick + 1;
 	jhd.flag = dat->flag;
 	jhd.crc32 = grfio_crc32( (const unsigned char *)dat->buf, (unsigned int)j->datasize );
 
 	// データ書き込み
-	fseek( j->fp, (long)(dat->idx * j->chunksize), SEEK_SET );
-	if( fwrite( &jhd, sizeof(jhd), 1, j->fp )==0 ||
+	if(journal_seek(j->fp, (uint64)target * j->chunksize, SEEK_SET) != 0 ||
+	   fwrite( &jhd, sizeof(jhd), 1, j->fp )==0 ||
 		fwrite( dat->buf, j->datasize, 1, j->fp )==0 )
 	{
 		printf("journal: file write error! key=%d\n", jhd.key );
+		j->io_error = 1;
 		return 0;
 	}
 
-	// 書き込んだのでキャッシュデータはもういらない
-	aFree( dat->buf );
-	dat->buf = NULL;
-
-	if( old_idx != -1 )
-	{
-		journal_push_free( j, old_idx );
-	}
+	/* fflush成功までは旧チャンクとキャッシュを保持する。 */
+	dat->timestamp = jhd.timestamp;
+	dat->tick = jhd.tick;
+	dat->written = 1;
 
 	return 1;
 }
@@ -333,14 +588,50 @@ static int journal_flush_sub( void* key, void* data, va_list ap )
 // ==========================================
 // ジャーナルの全キャッシュをファイルへ書き込む
 // ------------------------------------------
+static int journal_flush_commit(void *key, void *data, va_list ap)
+{
+	struct journal *j = va_arg(ap, struct journal *);
+	struct journal_data *dat = (struct journal_data *)data;
+	if(dat->pending_idx > 0) {
+		if(dat->idx >= 0)
+			journal_push_free(j, dat->idx);
+		dat->idx = dat->pending_idx;
+		dat->pending_idx = 0;
+		aFree(dat->buf);
+		dat->buf = NULL;
+	}
+	return 0;
+}
+
 int journal_flush( struct journal* j )
 {
-	if( j->db && j->fp )
-		numdb_foreach( j->db, journal_flush_sub, j, gettick(), time(NULL) );
-
-	if( j->fp )
-		fflush( j->fp );
+	if(!j || !j->db || !j->fp || j->mode != 0)
+		return -1;
+	/* キャッシュと旧チャンクを保ったまま、一時的なI/O障害から再試行する。 */
+	clearerr(j->fp);
+	j->io_error = 0;
+	numdb_foreach(j->db, journal_flush_sub, j, gettick(), JOURNAL_TIME_SOURCE(NULL));
+	if(fflush(j->fp) != 0 || ferror(j->fp))
+		j->io_error = 1;
+	if(j->io_error) {
+		printf("journal: flush failed; preserving [%s]\n", j->filename);
+		return -1;
+	}
+	numdb_foreach(j->db, journal_flush_commit, j);
 	return 0;
+}
+
+/* TXT保存前に呼び、失敗済み履歴と新しいTXTの不整合を防ぐ。 */
+int journal_checkpoint(struct journal *j)
+{
+	if(!j || (j->strict_load && j->load_error))
+		return -1;
+	/* 起動時の復旧・初期保存では書込み用ジャーナルがまだない。 */
+	if(!j->fp)
+		return j->io_error || j->needs_sync ? -1 : 0;
+	if(j->mode != 0)
+		return 0;
+	return journal_flush(j);
 }
 
 // ==========================================
@@ -388,47 +679,123 @@ const char* journal_get( struct journal* j, int key, int* flag )
 // ==========================================
 // ジャーナルの全キャッシュをファイルから読み込む
 // ------------------------------------------
-int journal_load_with_convert( struct journal* j, size_t datasize, const char* filename, void(*func)( struct journal_header *jhd, void *buf ) )
+static int journal_load_internal(struct journal *j, size_t datasize, const char *filename, void(*func)(struct journal_header *, void *), int strict)
 {
 	struct journal_header jhd;
-	int c,i;
+	int c;
+	size_t i;
+	long long length;
 
 	journal_init_( j, datasize, filename );
+	j->mode = 1;
+	j->strict_load = strict;
+#ifndef WINDOWS
+	{
+		struct stat path_stat;
+		if(strict && lstat(filename, &path_stat) == 0 && S_ISLNK(path_stat.st_mode)) {
+			printf("journal: file symlink unsupported; use its real target [%s]\n", filename);
+			j->io_error = j->load_error = 1;
+			return -1;
+		}
+	}
+#endif
 
 	// ファイルを読み込み用に開く
 	if( ( j->fp = fopen( filename, "r+b" ) ) == NULL )
 	{
+		if(errno != ENOENT) {
+			j->load_error = 1;
+			return -1;
+		}
 		return 0;
 	}
 
 	j->mode = 1;	// 読み取りモードフラグ
 
 	// ファイルが正しいかチェック
-	fread( &j->fhd, 1, sizeof(j->fhd), j->fp );
+	if(JOURNAL_READ_SOURCE(&j->fhd, 1, sizeof(j->fhd), j->fp) != sizeof(j->fhd)) {
+		j->load_error = 1;
+		if(strict)
+			return -1;
+		printf("journal: incomplete file header [%s]\n", filename);
+		abort();
+	}
 	if( memcmp( j->fhd.identifier, JOURNAL_IDENTIFIER, sizeof(j->fhd.identifier) ) != 0 )
 	{
+		j->load_error = 1;
+		if(strict) return -1;
 		printf("journal: file version mismatch ! '%s' vs '%s' [%s]\n", j->fhd.identifier, JOURNAL_IDENTIFIER, filename);
 		abort();
 	}
 	if( j->fhd.datasize != (unsigned int)datasize )
 	{
+		j->load_error = 1;
+		if(strict) return -1;
 		printf("journal: file datasize mismatch ! %u vs %u [%s]\n", j->fhd.datasize, (unsigned int)datasize, filename );
 		abort();
 	}
 
+	if(journal_seek(j->fp, 0, SEEK_END) != 0 || (length = journal_tell(j->fp)) < 0) {
+		j->load_error = 1;
+		j->io_error = 1;
+		return -1;
+	}
+	/* 正常な空ファイルと、ヘッダ後・レコード末尾の途切れを区別する。 */
+	if(strict && (uint64)length != sizeof(j->fhd)) {
+		uint64 payload = sizeof(jhd) + datasize;
+		if((uint64)length < j->chunksize + payload ||
+		   ((uint64)length - payload) % j->chunksize != 0) {
+			j->load_error = 1;
+			return -1;
+		}
+	}
+
 	// データの読み込みループ
 	c = 0;
-	for( i=1; fseek( j->fp, (long)(i*j->chunksize), SEEK_SET ), fread( &jhd, sizeof(jhd), 1, j->fp ) > 0; i++ )
-	{
+	for(i = 1; ; i++) {
+		size_t got;
+		if((uint64)i * j->chunksize >= (uint64)length)
+			break;
+		if(i > INT_MAX || journal_seek(j->fp, (uint64)i * j->chunksize, SEEK_SET) != 0) {
+			j->io_error = 1;
+			j->load_error = 1;
+			break;
+		}
+		/* 初めから途切れた末尾は従来APIでは除外し、読取り途中の縮小と区別する。 */
+		if((uint64)length - (uint64)i * j->chunksize < sizeof(jhd)) {
+			j->load_error = 1;
+			break;
+		}
+		got = JOURNAL_READ_SOURCE(&jhd, 1, sizeof(jhd), j->fp);
+		if(got != sizeof(jhd)) {
+			j->io_error = 1;
+			j->load_error = 1;
+			break;
+		}
 		struct journal_data *dat;
 		unsigned char* buf = (unsigned char *)aCalloc( 1, datasize );
 
 		// データ本体の読み込みと crc32 チェック
-		if( fread( buf, datasize, 1, j->fp ) == 0 || grfio_crc32( buf, (unsigned int)datasize ) != jhd.crc32 )
+		if( JOURNAL_READ_SOURCE( buf, datasize, 1, j->fp ) == 0 || grfio_crc32( buf, (unsigned int)datasize ) != jhd.crc32 ||
+		   (strict && jhd.flag != JOURNAL_FLAG_WRITE && jhd.flag != JOURNAL_FLAG_DELETE) )
 		{
-			printf("journal: file broken [%s], but continue...\n", filename );
+			printf("journal: file broken [%s]%s\n", filename,
+				strict ? "; recovery stopped" : ", but continue...");
+			if(ferror(j->fp)) j->io_error = 1;
 			aFree( buf );
+			j->load_error = 1;
+			if(strict) break;
 			continue;	// このデータが壊れてても他のデータは生きてると思われる
+		}
+
+		if(strict && jhd.flag == JOURNAL_FLAG_DELETE) {
+			size_t k;
+			for(k = 0; k < datasize && buf[k] == 0; k++);
+			if(k != datasize) {
+				aFree(buf);
+				j->load_error = 1;
+				break;
+			}
 		}
 
 		// 変換処理
@@ -440,7 +807,11 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 		if( dat )
 		{
 			// すでにあるので置き換えが必要か調べる
-			if( jhd.timestamp > dat->timestamp  &&  DIFF_TICK( jhd.tick, dat->tick ) > 0 )
+			/* tickは同じ起動中の順序を示すため、時計の後退より優先する。 */
+			if((difftime(jhd.timestamp, dat->timestamp) >= INT_MAX / 1000) ||
+			   (difftime(dat->timestamp, jhd.timestamp) < INT_MAX / 1000 &&
+			    (DIFF_TICK(jhd.tick, dat->tick) > 0 ||
+			     (jhd.tick == dat->tick && jhd.timestamp > dat->timestamp))))
 			{
 				// 置き換え
 				journal_push_free( j, dat->idx );
@@ -449,7 +820,8 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 				dat->timestamp = jhd.timestamp;
 				dat->tick = jhd.tick;
 				dat->flag = jhd.flag;
-				dat->idx  = i;
+				dat->idx  = (int)i;
+				dat->written = 1;
 			}
 			else
 			{
@@ -465,12 +837,36 @@ int journal_load_with_convert( struct journal* j, size_t datasize, const char* f
 			dat->timestamp = jhd.timestamp;
 			dat->tick = jhd.tick;
 			dat->flag = jhd.flag;
-			dat->idx  = i;
+			dat->idx  = (int)i;
+				dat->written = 1;
 			numdb_insert( j->db, jhd.key, dat );
 			c++;
 		}
 	}
+	if(j->io_error || (strict && j->load_error)) {
+		printf("journal: recovery refused [%s]\n", filename);
+		return -1;
+	}
 	return c;
+}
+
+/* 従来APIは読めるレコードを復旧し、厳格APIは一部破損も失敗とする。 */
+int journal_load_with_convert(struct journal *j, size_t size, const char *file,
+	void(*convert)(struct journal_header *, void *))
+{
+	return journal_load_internal(j, size, file, convert, 0);
+}
+
+int journal_load_checked(struct journal *j, size_t size, const char *file)
+{
+	return journal_load_internal(j, size, file, NULL, 1);
+}
+
+/* 各レコードを集約前に検証・変換する。終了まで成功が確定しない点に注意。 */
+int journal_load_checked_with_convert(struct journal *j, size_t size, const char *file,
+	void (*convert)(struct journal_header *, void *))
+{
+	return journal_load_internal(j, size, file, convert, 1);
 }
 
 // ==========================================
@@ -495,6 +891,8 @@ int journal_rollforward( struct journal* j, int(*func)( int key, void* buf, int 
 {
 	int c = 0;
 
+	if(j->strict_load && j->load_error)
+		return -1;
 	numdb_foreach( j->db, journal_rollforward_sub, func, &c );
 	return c;
 }
@@ -541,7 +939,12 @@ int journal_setup(struct journal *j, const struct journal_config *cfg, size_t da
 	if(j == NULL || cfg == NULL || !cfg->enable)
 		return 0;
 
-	if(journal_load(j, datasize, cfg->file)) {
+	int loaded = journal_load(j, datasize, cfg->file);
+	if(loaded < 0) {
+		printf("journal: recovery I/O failed [%s]\n", cfg->file);
+		abort();
+	}
+	if(loaded > 0) {
 		int c = journal_rollforward(j, rollforward);
 		printf("%s: roll-forward (%d)\n", log_tag ? log_tag : "journal", c);
 		return 1;
@@ -559,7 +962,12 @@ int journal_setup_with_convert(struct journal *j, const struct journal_config *c
 	if(j == NULL || cfg == NULL || !cfg->enable)
 		return 0;
 
-	if(journal_load_with_convert(j, datasize, cfg->file, convert)) {
+	int loaded = journal_load_with_convert(j, datasize, cfg->file, convert);
+	if(loaded < 0) {
+		printf("journal: recovery I/O failed [%s]\n", cfg->file);
+		abort();
+	}
+	if(loaded > 0) {
 		int c = journal_rollforward(j, rollforward);
 		printf("%s: roll-forward (%d)\n", log_tag ? log_tag : "journal", c);
 		return 1;
@@ -570,11 +978,47 @@ int journal_setup_with_convert(struct journal *j, const struct journal_config *c
 	return 0;
 }
 
+/* 復旧TXTを確定できないまま更新受付を開始しない。 */
+void journal_require_ready(const struct journal *j, const struct journal_config *cfg)
+{
+	if(cfg->enable && (!j->fp || j->mode != 0 || j->io_error)) {
+		printf("journal: writable generation not ready [%s]\n", cfg->file);
+		abort();
+	}
+}
+
+int journal_recreate_checked(struct journal *j, const struct journal_config *cfg, size_t datasize)
+{
+	if(j == NULL || cfg == NULL)
+		return 0;
+	if(!cfg->enable)
+		return 1;
+	if(j->io_error || (j->strict_load && j->load_error))
+		return 0;
+#ifndef WINDOWS
+	{
+		struct stat path_stat;
+		if(lstat(cfg->file, &path_stat) == 0 && S_ISLNK(path_stat.st_mode)) {
+			j->io_error = 1;
+			return 0;
+		}
+	}
+#endif
+	j->needs_sync = 0;
+	/* TXT確定済み。旧ファイルは置換まで残し、権限と所有者を引き継ぐ。 */
+	j->mode = 1;
+	journal_final(j);
+	/* TXT確定済みなので、close失敗後も新しい書込み世代を開始できる。 */
+	return journal_create_checked(j, datasize, cfg->cache, cfg->file);
+}
+
 void journal_recreate(struct journal *j, const struct journal_config *cfg, size_t datasize)
 {
-	if(j == NULL || cfg == NULL || !cfg->enable)
+	if(j == NULL || cfg == NULL || !cfg->enable ||
+	   j->io_error || (j->strict_load && j->load_error))
 		return;
-
+	/* 従来利用側は、従来の作成・終了経路を維持する。 */
+	j->needs_sync = 0;
 	journal_final(j);
 	journal_create(j, datasize, cfg->cache, cfg->file);
 }

@@ -212,6 +212,7 @@ static bool petdb_txt_read(void)
 	if( journal_setup( &pet_journal, &pet_journal_cfg, sizeof(struct s_pet), pet_journal_rollforward, "inter: pet_journal" ) )
 	{
 		petdb_txt_sync();
+		journal_require_ready(&pet_journal, &pet_journal_cfg);
 	}
 
 #endif
@@ -240,6 +241,12 @@ int petdb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(pet_journal_cfg.enable && journal_checkpoint(&pet_journal) != 0)
+		return 1;
+#endif
+
 	if( !pet_db )
 		return 1;
 
@@ -248,7 +255,8 @@ int petdb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(pet_db, petdb_txt_sync_sub, fp);
-	lock_fclose(fp,pet_txt, &lock);
+	if(lock_fclose_checked(fp,pet_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( pet_journal_cfg.enable )
