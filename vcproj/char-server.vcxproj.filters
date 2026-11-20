@@ -19,6 +19,9 @@
     <ClCompile Include="..\src\char\int_mail.c">
       <Filter>char_sql</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\char\int_cashshop.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\char\int_merc.c">
       <Filter>char_sql</Filter>
     </ClCompile>
@@ -41,6 +44,9 @@
       <Filter>char_sql</Filter>
     </ClCompile>
     <ClCompile Include="..\src\char\sql\accregdb_sql.c">
+      <Filter>char_sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\char\sql\cashshopdb_sql.c">
       <Filter>char_sql</Filter>
     </ClCompile>
     <ClCompile Include="..\src\char\sql\chardb_sql.c">
@@ -180,6 +186,9 @@
     <ClInclude Include="..\src\char\int_mail.h">
       <Filter>char_sql</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\char\int_cashshop.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\char\int_merc.h">
       <Filter>char_sql</Filter>
     </ClInclude>
@@ -202,6 +211,9 @@
       <Filter>char_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\char\sql\accregdb_sql.h">
+      <Filter>char_sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\char\sql\cashshopdb_sql.h">
       <Filter>char_sql</Filter>
     </ClInclude>
     <ClInclude Include="..\src\char\sql\chardb_sql.h">
@@ -277,6 +289,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\mmo.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\cashshop_data.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\nullpo.h">

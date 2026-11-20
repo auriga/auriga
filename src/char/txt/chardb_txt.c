@@ -1082,8 +1082,15 @@ static int char_journal_migrate(void)
 	fclose(fp);
 	if(header.datasize != sizeof(struct mmo_chardata_legacy))
 		return 0;
-	if(!journal_load(&char_journal, sizeof(struct mmo_chardata_legacy), char_journal_cfg.file))
-		return -1;
+	{
+		int loaded = journal_load(&char_journal, sizeof(struct mmo_chardata_legacy), char_journal_cfg.file);
+		if(loaded < 0) {
+			printf("char: legacy journal recovery I/O failed\n");
+			abort();
+		}
+		if(!loaded)
+			return -1;
+	}
 	journal_rollforward(&char_journal, char_journal_rollforward_legacy);
 	chardb_txt_sync();
 	if(char_journal.mode != 0) {
@@ -1161,6 +1168,7 @@ static bool chardb_txt_read(void)
 			return false;
 		if(migrated == 0 && journal_setup( &char_journal, &char_journal_cfg, sizeof(struct mmo_chardata), char_journal_rollforward, "char: journal" ))
 			chardb_txt_sync();
+		journal_require_ready(&char_journal, &char_journal_cfg);
 	}
 
 #endif
@@ -1195,6 +1203,12 @@ void chardb_txt_sync(void)
 	int i, lock;
 	FILE *fp;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶Ž¸”sŒã‚ÉTXT‚¾‚¯‚ði‚ßAŒÃ‚¢—š—ð‚ÅŠª‚«–ß‚·‚±‚Æ‚ð–h‚®B */
+	if(char_journal_cfg.enable && journal_checkpoint(&char_journal) != 0)
+		return;
+#endif
+
 	if( !char_dat )
 		return;
 
@@ -1211,7 +1225,8 @@ void chardb_txt_sync(void)
 		}
 	}
 	fprintf(fp, "%d\t%%newid%%" NEWLINE, char_id_count);
-	lock_fclose(fp, char_txt, &lock);
+	if(lock_fclose_checked(fp, char_txt, &lock) != 0)
+		return;
 
 #ifdef TXT_JOURNAL
 	if( char_journal_cfg.enable )

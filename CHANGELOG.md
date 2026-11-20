@@ -1,4 +1,23 @@
 ----------------------------------------
+//1635 [2026/11/18] by refis
+
+・アカウント限定キャッシュショップを追加（タブ8、PACKETVER 20190724以降）。
+　販売枠IDごとにアカウント共通の購入数を管理し、上限・残数・価格・販売期間を表示する。
+　通常商品の管理・購入処理とcashshop.cにまとめ、重複明細も合算して購入前に検証する。
+　購入履歴のTXT／SQL保存とインター通信を追加し、再送や遅延保存で購入数を巻き戻さない。
+　（cashshop.*, cashshop_data.h, int_cashshop.*, cashshopdb_*, clif.*, intif.*, map.*, pc_ui.c,
+　　inter.c, luascript.c, sqldbs.h, db/cashshop.lua, conf/inter_auriga.conf, sql-files/*,
+　　doc/*, tests/*, vcproj/*）
+
+・共通ジャーナルの保存失敗検出とファイル保持を改善し、厳格な復旧APIを追加。
+　TXT同期前に履歴の保存結果を確認し、失敗した履歴とTXTの不整合を防止する。
+　一時的な保存障害の再試行、TXT未反映の履歴保持、ギルドと砦の独立した同期に対応する。
+　同一時刻内の連続更新や旧履歴の時計後退を考慮し、64bitファイル位置と末尾検査に対応。
+　復旧TXTを確定できない場合は起動を中断する。既存ファイル形式は維持する。
+　（journal.*, lock.*, utils.h, src/char/txt/*, src/login/txt/account_txt.c, src/map/txt/mapreg_txt.c,
+　　doc/journal.txt, doc/unit_test.txt, tests/*）
+
+----------------------------------------
 //1634 [2026/11/17] by refis
 
 ・販売露店・買取露店の検索とsearchstores命令を追加（PACKETVER 20100706以降、RE基準）。

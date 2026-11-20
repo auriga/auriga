@@ -22240,27 +22240,57 @@ static void clif_cashshop_send_list(struct map_session_data *sd)
 static void clif_cashshop_open(struct map_session_data *sd, unsigned int tab)
 {
 #if PACKETVER >= 20120328
+	int was_open = pc_ui_is(sd, PC_UI_CASHSHOP);
 	if(!battle_config.feature_cashshop || tab >= CASHSHOP_TAB_MAX || sd->npc_id || sd->npc_shopid ||
 	   sd->state.store || sd->state.deal_mode || sd->state.storage_flag || sd->chatID ||
 	   sd->state.mail_appending || sd->status.manner < 0 || unit_isdead(&sd->bl) ||
 	   !pc_ui_begin(sd, PC_UI_CASHSHOP))
 		return;
+	if(!was_open)
+		cashshop_account_close(sd);
 	clif_cashshop_open_ack(sd, (int)tab);
 #endif
 }
 
 /* アカウント限定販売一覧の要求。空の一覧を返す。 */
-static void clif_parse_CashShopAccountSaleList(int fd,struct map_session_data *sd, int cmd)
+/* 0x0b4d: 状態Wと24バイトの商品明細。0はopen、1はclosed。 */
+void clif_cashshop_account_list(struct map_session_data *sd)
+{
+#if PACKETVER >= 20190724
+	int i, fd, len = 6, available = 0;
+
+	nullpo_retv(sd);
+	if(!pc_ui_is(sd, PC_UI_CASHSHOP))
+		return;
+	fd = sd->fd;
+	WFIFOW(fd, 0) = 0xb4d;
+	if(battle_config.feature_cashshop && sd->cashshop_account_loaded) {
+		for(i = 0; i < cashshop_account_item_count(); i++) {
+			const struct cashshop_account_item *it = cashshop_account_item_at(i);
+			int remain = cashshop_account_remaining(sd, it->sale_id);
+			if(!cashshop_account_available(it) || remain < 0)
+				continue;
+			WFIFOL(fd, len) = itemdb_viewid(it->nameid) > 0 ? itemdb_viewid(it->nameid) : it->nameid;
+			WFIFOL(fd, len + 4) = it->limit;
+			WFIFOL(fd, len + 8) = remain;
+			WFIFOL(fd, len + 12) = it->price;
+			WFIFOL(fd, len + 16) = it->start_time;
+			WFIFOL(fd, len + 20) = it->end_time;
+			len += 24;
+			available = 1;
+		}
+	}
+	WFIFOW(fd, 2) = len;
+	WFIFOW(fd, 4) = available ? 0 : 1;
+	WFIFOSET(fd, len);
+#endif
+}
+
+static void clif_parse_CashShopAccountSaleList(int fd, struct map_session_data *sd, int cmd)
 {
 #if PACKETVER >= 20190724
 	nullpo_retv(sd);
-	if(!battle_config.feature_cashshop || !pc_ui_is(sd, PC_UI_CASHSHOP))
-		return;
-
-	WFIFOW(fd,0) = 0xb4d;
-	WFIFOW(fd,2) = 6;
-	WFIFOW(fd,4) = 0;
-	WFIFOSET(fd,6);
+	cashshop_account_request(sd);
 #endif
 }
 

@@ -283,6 +283,7 @@ static bool mapreg_txt_load(void)
 	if( journal_setup_with_convert( &mapreg_journal, &mapreg_journal_cfg, sizeof(struct mapreg_data), mapreg_journal_rollforward, mapreg_journal_convert, "map: mapreg_journal" ) )
 	{
 		mapreg_txt_sync();
+		journal_require_ready(&mapreg_journal, &mapreg_journal_cfg);
 	}
 
 #endif
@@ -329,6 +330,12 @@ static int mapreg_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(mapreg_journal_cfg.enable && journal_checkpoint(&mapreg_journal) != 0)
+		return -1;
+#endif
+
 	if( (fp = lock_fopen(mapreg_txt, &lock)) == NULL ) {
 		printf("mapreg_txt_sync: can't write [%s] !!! data is lost !!!\n", mapreg_txt);
 		return -1;
@@ -337,7 +344,8 @@ static int mapreg_txt_sync(void)
 	numdb_foreach(mapreg_db, mapreg_txt_sync_intsub, fp);
 	numdb_foreach(mapregstr_db, mapreg_txt_sync_strsub, fp);
 
-	lock_fclose(fp, mapreg_txt, &lock);
+	if(lock_fclose_checked(fp, mapreg_txt, &lock) != 0)
+		return -1;
 	mapreg_dirty = 0;
 
 #ifdef TXT_JOURNAL

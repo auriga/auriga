@@ -194,6 +194,7 @@ static bool elemdb_txt_read(void)
 	if( journal_setup( &elem_journal, &elem_journal_cfg, sizeof(struct mmo_elemstatus), elem_journal_rollforward, "inter: elem_journal" ) )
 	{
 		elemdb_txt_sync();
+		journal_require_ready(&elem_journal, &elem_journal_cfg);
 	}
 
 #endif
@@ -221,6 +222,12 @@ int elemdb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(elem_journal_cfg.enable && journal_checkpoint(&elem_journal) != 0)
+		return 1;
+#endif
+
 	if( !elem_db )
 		return 1;
 
@@ -229,7 +236,8 @@ int elemdb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(elem_db, elemdb_txt_sync_sub, fp);
-	lock_fclose(fp, elem_txt, &lock);
+	if(lock_fclose_checked(fp, elem_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( elem_journal_cfg.enable )

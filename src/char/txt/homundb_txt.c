@@ -296,6 +296,7 @@ static bool homundb_txt_read(void)
 	if( journal_setup( &homun_journal, &homun_journal_cfg, sizeof(struct mmo_homunstatus), homun_journal_rollforward, "inter: homun_journal" ) )
 	{
 		homundb_txt_sync();
+		journal_require_ready(&homun_journal, &homun_journal_cfg);
 	}
 
 #endif
@@ -324,6 +325,12 @@ int homundb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(homun_journal_cfg.enable && journal_checkpoint(&homun_journal) != 0)
+		return 1;
+#endif
+
 	if( !homun_db )
 		return 1;
 
@@ -332,7 +339,8 @@ int homundb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(homun_db, homundb_txt_sync_sub, fp);
-	lock_fclose(fp, homun_txt, &lock);
+	if(lock_fclose_checked(fp, homun_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( homun_journal_cfg.enable )

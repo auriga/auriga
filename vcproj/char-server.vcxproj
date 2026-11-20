@@ -106,6 +106,7 @@
     <ClInclude Include="..\src\char\char.h" />
     <ClInclude Include="..\src\char\inter.h" />
     <ClInclude Include="..\src\char\int_achieve.h" />
+    <ClInclude Include="..\src\char\int_cashshop.h" />
     <ClInclude Include="..\src\char\int_elem.h" />
     <ClInclude Include="..\src\char\int_guild.h" />
     <ClInclude Include="..\src\char\int_homun.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="..\src\char\int_storage.h" />
     <ClInclude Include="..\src\char\sql\storagedb_sql.h" />
     <ClInclude Include="..\src\char\sql\achievedb_sql.h" />
+    <ClInclude Include="..\src\char\sql\cashshopdb_sql.h" />
     <ClInclude Include="..\src\char\sql\accregdb_sql.h" />
     <ClInclude Include="..\src\char\sql\chardb_sql.h" />
     <ClInclude Include="..\src\char\sql\item_sql.h" />
@@ -144,6 +146,7 @@
     <ClInclude Include="..\src\common\malloc.h" />
     <ClInclude Include="..\src\common\md5calc.h" />
     <ClInclude Include="..\src\common\mmo.h" />
+    <ClInclude Include="..\src\common\cashshop_data.h" />
     <ClInclude Include="..\src\common\nullpo.h" />
     <ClInclude Include="..\src\common\sqldbs.h" />
     <ClInclude Include="..\src\common\socket.h" />
@@ -166,6 +169,7 @@
     <ClCompile Include="..\src\char\char.c" />
     <ClCompile Include="..\src\char\inter.c" />
     <ClCompile Include="..\src\char\int_achieve.c" />
+    <ClCompile Include="..\src\char\int_cashshop.c" />
     <ClCompile Include="..\src\char\int_elem.c" />
     <ClCompile Include="..\src\char\int_guild.c" />
     <ClCompile Include="..\src\char\int_homun.c" />
@@ -178,6 +182,7 @@
     <ClCompile Include="..\src\char\int_storage.c" />
     <ClCompile Include="..\src\char\sql\storagedb_sql.c" />
     <ClCompile Include="..\src\char\sql\achievedb_sql.c" />
+    <ClCompile Include="..\src\char\sql\cashshopdb_sql.c" />
     <ClCompile Include="..\src\char\sql\accregdb_sql.c" />
     <ClCompile Include="..\src\char\sql\chardb_sql.c" />
     <ClCompile Include="..\src\char\sql\item_sql.c" />

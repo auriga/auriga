@@ -214,6 +214,7 @@ static bool questdb_txt_read(void)
 	if( journal_setup( &quest_journal, &quest_journal_cfg, sizeof(struct quest), quest_journal_rollforward, "inter: quest_journal" ) )
 	{
 		questdb_txt_sync();
+		journal_require_ready(&quest_journal, &quest_journal_cfg);
 	}
 
 #endif
@@ -245,6 +246,12 @@ int questdb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(quest_journal_cfg.enable && journal_checkpoint(&quest_journal) != 0)
+		return 1;
+#endif
+
 	if( !quest_db )
 		return 1;
 
@@ -253,7 +260,8 @@ int questdb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(quest_db, questdb_txt_sync_sub, fp);
-	lock_fclose(fp, quest_txt, &lock);
+	if(lock_fclose_checked(fp, quest_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( quest_journal_cfg.enable )

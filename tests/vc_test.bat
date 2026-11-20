@@ -18,7 +18,7 @@ if not exist stubs mkdir stubs
 echo Building unit tests (MSVC)...
 
 set OBJS=
-for %%F in (test_main.c test_md5calc.c test_utils.c test_db.c test_misc.c test_status_calc_ctrl.c test_pc_ui.c test_cashshop.c test_stylist.c test_searchstore.c test_grf_protected.c) do (
+for %%F in (test_main.c test_md5calc.c test_utils.c test_db.c test_misc.c test_status_calc_ctrl.c test_pc_ui.c test_cashshop.c test_account_cashshop.c test_stylist.c test_searchstore.c test_grf_protected.c) do (
   cl %CFLAGS% /c /Fo%%~nF.obj %%F
   if errorlevel 1 exit /b 1
   set OBJS=!OBJS! %%~nF.obj
@@ -56,6 +56,10 @@ cl %CFLAGS% /c /Fosearchstore.obj "%MAP%\searchstore.c"
 if errorlevel 1 exit /b 1
 set OBJS=!OBJS! searchstore.obj
 
+cl %CFLAGS% /c /Focashshopdb_txt.obj ..\src\char\txt\cashshopdb_txt.c
+if errorlevel 1 exit /b 1
+set OBJS=!OBJS! cashshopdb_txt.obj
+
 cl %CFLAGS% /c /Folz4.obj "%LZ4%\lz4.c"
 if errorlevel 1 exit /b 1
 set OBJS=!OBJS! lz4.obj
@@ -69,4 +73,20 @@ if errorlevel 1 exit /b 1
 
 echo Running unit_tests.exe...
 unit_tests.exe
+if errorlevel 1 exit /b 1
+cl %CFLAGS% /DTXT_JOURNAL /Dfflush=journal_test_fflush /Dfwrite=journal_test_fwrite /Dfclose=journal_test_fclose /DJOURNAL_TIME_SOURCE=journal_test_time /DJOURNAL_TELL_SOURCE=journal_test_tell /DJOURNAL_READ_SOURCE=journal_test_read /c /Fojournal.obj "%COMMON%\journal.c"
+if errorlevel 1 exit /b 1
+cl %CFLAGS% /DTXT_JOURNAL /c /Fotest_journal.obj test_journal.c
+if errorlevel 1 exit /b 1
+cl %CFLAGS% /DTXT_JOURNAL /c /Fotest_cashshop_journal.obj test_cashshop_journal.c
+if errorlevel 1 exit /b 1
+cl %CFLAGS% /DTXT_JOURNAL /c /Focashshopdb_journal.obj ..\src\char\txt\cashshopdb_txt.c
+if errorlevel 1 exit /b 1
+cl %CFLAGS% /DTXT_JOURNAL /c /Fotest_cashshop_journal.obj test_cashshop_journal.c
+if errorlevel 1 exit /b 1
+cl %CFLAGS% /DTXT_JOURNAL /c /Focashshopdb_journal.obj ..\src\char\txt\cashshopdb_txt.c
+if errorlevel 1 exit /b 1
+cl /nologo /Fe:journal_tests.exe test_journal.obj test_cashshop_journal.obj cashshopdb_journal.obj journal.obj db.obj utils.obj nullpo.obj lock.obj stubs\malloc_stub.obj unity.obj
+if errorlevel 1 exit /b 1
+journal_tests.exe
 exit /b %ERRORLEVEL%

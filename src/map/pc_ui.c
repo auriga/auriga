@@ -21,6 +21,7 @@
 
 #include "map.h"
 #include "pc_ui.h"
+#include "cashshop.h"
 
 struct pc_ui_policy {
 	unsigned int blocks;
@@ -73,6 +74,8 @@ int pc_ui_end(struct map_session_data *sd, enum pc_ui_type type)
 		return 0;
 	if(type == PC_UI_BARTER || type == PC_UI_EXBARTER)
 		sd->npc_shopid = 0;
+	if(type == PC_UI_CASHSHOP)
+		cashshop_account_close(sd);
 	sd->state.open_ui = PC_UI_NONE;
 	return 1;
 }

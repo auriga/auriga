@@ -423,6 +423,7 @@ void clif_ball(struct map_session_data *sd);
 void clif_openvendingreq(struct map_session_data *sd, int num);
 void clif_showvendingboard(struct block_list* bl, const char *shop_title, int fd);
 void clif_closevendingboard(struct block_list* bl, int fd);
+void clif_cashshop_account_list(struct map_session_data *sd);
 int clif_open_search_store_info(struct map_session_data *sd);
 void clif_search_store_info_ack(struct map_session_data *sd);
 void clif_search_store_info_failed(struct map_session_data *sd, unsigned char reason);

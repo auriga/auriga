@@ -3038,3 +3038,8 @@ S 0ae8
 
 R 0b64 <len>.w <IsFirstPage>.B <IsNexPage>.B <RemainedSearchCnt>.B { <SSI_ID>.l <ID>.l <StoreName>.80B <item_id>.l <item_type>.B <price>.l <count>.w <card>.4l }.142B
 	露店検索システム検索応答
+
+R 0b4d <len>.w <status>.w { <item_id>.l <limit>.l <remaining>.l <price>.l <start_time>.l <end_time>.l }*
+	アカウント限定商品一覧（PACKETVER >= 20190724）。明細は24バイト、statusは0=open、1=closed。
+	時刻はUNIX秒。売切れの商品もremaining=0で表示します。開催商品なし・履歴未取得時はclosedを返します。
+	購入要求は既存0x0848を使用し、明細のタブ番号8で限定商品を指定します。

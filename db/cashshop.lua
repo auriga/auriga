@@ -12,7 +12,7 @@ local TAB_EQUIPMENT = 4 -- 装備
 local TAB_ENHANCEMENT = 5 -- 強化
 local TAB_RECOVERY = 6 -- 回復
 local TAB_OTHER = 7 -- その他
-local TAB_SALE = 8 -- セール
+-- タブ8はアカウント限定商品専用。通常商品には指定しない。
 
 CashshopTBL = {
 	-- 新着
@@ -68,10 +68,24 @@ CashshopTBL = {
 	-- { Tab = TAB_OTHER, ItemID = 201145, Price = 5000, StartDate = 0, EndDate = 0 },
 }
 
+-- SaleIDは販売枠ごとの一意な番号。再販時は新しい番号を指定する。
+-- Limitはアカウント共通の購入上限（アイテム個数）。
+-- StartTime以上、EndTime未満の間に購入可能。日時はサーバーのタイムゾーンで指定する。
+CashshopAccountTBL = {
+	-- { SaleID = 1, ItemID = 501, Price = 100, Limit = 10,
+	--   StartTime = os.time{year=2026, month=11, day=18, hour=0, min=0, sec=0},
+	--   EndTime = os.time{year=2026, month=12, day=1, hour=0, min=0, sec=0} },
+}
+
 ClearCashshop()
 for _, v in ipairs(CashshopTBL) do
 	if not InsertCashshopItem(v.Tab, v.ItemID, v.Price, v.StartDate or 0, v.EndDate or 0) then
 		error(string.format("cashshop.lua: invalid entry Tab=%d ItemID=%d", v.Tab, v.ItemID))
+	end
+end
+for _, v in ipairs(CashshopAccountTBL) do
+	if not InsertCashshopAccountItem(v.SaleID, v.ItemID, v.Price, v.Limit, v.StartTime, v.EndTime) then
+		error(string.format("cashshop.lua: invalid account sale SaleID=%d ItemID=%d", v.SaleID, v.ItemID))
 	end
 end
 return true

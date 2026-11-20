@@ -217,6 +217,7 @@ static bool achievedb_txt_read(void)
 	if( journal_setup( &achieve_journal, &achieve_journal_cfg, sizeof(struct achieve), achieve_journal_rollforward, "inter: achieve_journal" ) )
 	{
 		achievedb_txt_sync();
+		journal_require_ready(&achieve_journal, &achieve_journal_cfg);
 	}
 
 #endif
@@ -248,6 +249,12 @@ int achievedb_txt_sync(void)
 	FILE *fp;
 	int lock;
 
+#ifdef TXT_JOURNAL
+	/* •Û‘¶¸”sŒã‚ÉTXT‚¾‚¯‚ği‚ßAŒÃ‚¢—š—ğ‚ÅŠª‚«–ß‚·‚±‚Æ‚ğ–h‚®B */
+	if(achieve_journal_cfg.enable && journal_checkpoint(&achieve_journal) != 0)
+		return 1;
+#endif
+
 	if( !achieve_db )
 		return 1;
 
@@ -256,7 +263,8 @@ int achievedb_txt_sync(void)
 		return 1;
 	}
 	numdb_foreach(achieve_db, achievedb_txt_sync_sub, fp);
-	lock_fclose(fp, achieve_txt, &lock);
+	if(lock_fclose_checked(fp, achieve_txt, &lock) != 0)
+		return 1;
 
 #ifdef TXT_JOURNAL
 	if( achieve_journal_cfg.enable )

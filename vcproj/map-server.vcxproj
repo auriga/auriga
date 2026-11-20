@@ -161,6 +161,7 @@
     <ClInclude Include="..\src\common\malloc.h" />
     <ClInclude Include="..\src\common\md5calc.h" />
     <ClInclude Include="..\src\common\mmo.h" />
+    <ClInclude Include="..\src\common\cashshop_data.h" />
     <ClInclude Include="..\src\common\nullpo.h" />
     <ClInclude Include="..\src\common\sqldbs.h" />
     <ClInclude Include="..\src\common\socket.h" />

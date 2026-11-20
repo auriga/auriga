@@ -28,6 +28,7 @@
 #include "mmo.h"
 #include "script.h"
 #include "pc_ui.h"
+#include "cashshop_data.h"
 
 #define MAX_NPC_PER_MAP 512
 #define BLOCK_SIZE 8
@@ -989,6 +990,11 @@ struct map_session_data {
 	short hotkey_set;
 	char hotkey_rotate[MAX_HOTKEYS_TAB];
 	int shop_point;
+	struct cashshop_account_count *cashshop_account_history;
+	int cashshop_account_count;
+	unsigned int cashshop_account_token, cashshop_account_generation;
+	time_t cashshop_account_query_time;
+	unsigned char cashshop_account_loaded;
 	int lapine_upgrade_id;
 
 #if PACKETVER >= 20150513

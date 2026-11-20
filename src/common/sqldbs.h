@@ -100,6 +100,7 @@ extern struct sqldbs_handle mysql_handle;
 #define GUILD_STORAGE_TABLE   "guild_storage"
 #define INTERLOG_TABLE        "interlog"
 #define ACCOUNTREG_TABLE      "accountreg"
+#define ACCOUNT_CASHSHOP_TABLE "account_cashshop"
 #define GLOBALREG_TABLE       "globalreg"
 
 // map

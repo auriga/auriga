@@ -110,6 +110,19 @@ luaファイルは基本的にluaのバージョン5.1.4に準拠します。
 			成功すれば1 を、失敗すれば0 を返します
 
 
+		InsertCashshopAccountItem関数
+			InsertCashshopAccountItem(saleId,itemId,price,limit,startTime,endTime)
+
+			saleId		販売枠ID（1～2147483647）
+			itemId		登録済みアイテムID
+			price		1個あたりのPC_SHOP_POINT価格（0以上）
+			limit		アカウント共通の購入上限（1～2147483647、アイテム個数）
+			startTime/endTime	UNIX時刻（1～4294967295、開始以上・終了未満）
+
+			限定商品を登録します。成功時true、無効な引数・重複・登録上限超過時false。
+			itemIdとsaleIdはそれぞれ限定商品内で一意にします。日時はendTime > startTimeとします。
+			購入履歴を維持する場合は同じsaleIdを使い、再販時は新しいsaleIdに変更します。
+
 		ClearCashshop関数
 			ClearCashshop()
 			登録済みのキャッシュショップ商品を消去します。戻り値はtrue。

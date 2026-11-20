@@ -25,6 +25,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#ifndef _WIN32
+#include <strings.h>
+#endif
 
 // C11 ŒÅ’è•®”‚Æ‘®ƒ}ƒNƒ
 #if defined(_MSC_VER)

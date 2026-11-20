@@ -23,7 +23,12 @@
 #define _LOCK_H_
 
 FILE* lock_fopen(const char* filename,int *info);
+/* バイナリの一時ファイルを開く。確定にはlock_fclose_checkedを使用する。 */
+FILE *lock_fopen_binary(const char *filename, int *info);
 int   lock_fclose(FILE *fp,const char* filename,int *info);
+
+/* 成功0、失敗1。書込み・close・置換を確認し、失敗時は元ファイルを残す。 */
+int lock_fclose_checked(FILE *fp, const char *filename, int *info);
 
 #endif
 

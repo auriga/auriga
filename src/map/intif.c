@@ -44,6 +44,7 @@
 #include "battle.h"
 #include "chrif.h"
 #include "clif.h"
+#include "cashshop.h"
 #include "pc.h"
 #include "intif.h"
 #include "storage.h"
@@ -69,7 +70,7 @@ static const int packet_len_table[]={
 	-1, 7, 0, 0,  0, 0, 0, 0, -1, 7, 0, 0,  0, 0,  0, 0,	// 3860-
 	-1, 7, 3, 0,  0, 0, 0, 0, -1, 7, 0, 0, -1, 7,  3, 0,	// 3870-
 	11,-1, 7, 3,  0, 0, 0, 0, -1, 7, 3, 0,  0, 0,  0, 0,	// 3880-
-	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
+	31,51,51,-1, -1,15, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3890-
 };
 
 extern int char_fd;		// inter serverのfdはchar_fdを使う
@@ -77,6 +78,46 @@ extern int char_fd;		// inter serverのfdはchar_fdを使う
 
 //-----------------------------------------------------------------
 // inter serverへの送信
+
+/* アカウント限定販売の履歴要求。未購入の販売枠もIDを指定して取得する。 */
+int intif_cashshop_account_request(struct map_session_data *sd)
+{
+	int i, len;
+	if(!sd || !chrif_isconnect() || inter_fd < 0 || sd->cashshop_account_count < 1 ||
+	   sd->cashshop_account_count > CASHSHOP_ACCOUNT_MAX || !sd->cashshop_account_history)
+		return 0;
+	len = 16 + sd->cashshop_account_count * 4;
+	WFIFOW(inter_fd, 0) = 0x3094;
+	WFIFOW(inter_fd, 2) = len;
+	WFIFOL(inter_fd, 4) = sd->status.account_id;
+	WFIFOL(inter_fd, 8) = sd->status.char_id;
+	WFIFOL(inter_fd, 12) = sd->cashshop_account_token;
+	for(i = 0; i < sd->cashshop_account_count; i++)
+		WFIFOL(inter_fd, 16 + i * 4) = sd->cashshop_account_history[i].sale_id;
+	WFIFOSET(inter_fd, len);
+	return 1;
+}
+
+/* 累積数を保存するため、同じ保存要求を受けても二重加算しない。 */
+int intif_cashshop_account_save(struct map_session_data *sd)
+{
+	int i, len;
+	if(!sd || !chrif_isconnect() || inter_fd < 0 || !sd->cashshop_account_history ||
+	   sd->cashshop_account_count < 1 || sd->cashshop_account_count > CASHSHOP_ACCOUNT_MAX)
+		return 0;
+	len = 16 + sd->cashshop_account_count * 8;
+	WFIFOW(inter_fd, 0) = 0x3095;
+	WFIFOW(inter_fd, 2) = len;
+	WFIFOL(inter_fd, 4) = sd->status.account_id;
+	WFIFOL(inter_fd, 8) = sd->status.char_id;
+	WFIFOL(inter_fd, 12) = sd->cashshop_account_token;
+	for(i = 0; i < sd->cashshop_account_count; i++) {
+		WFIFOL(inter_fd, 16 + i * 8) = sd->cashshop_account_history[i].sale_id;
+		WFIFOL(inter_fd, 20 + i * 8) = sd->cashshop_account_history[i].purchased;
+	}
+	WFIFOSET(inter_fd, len);
+	return 1;
+}
 
 // ペット
 void intif_create_pet(int account_id,int char_id,short pet_class,short pet_lv,short pet_egg_id,
@@ -2484,6 +2525,39 @@ static int intif_parse_CharMoveReq(int fd)
  * 対象IDにメッセージを送信
  *------------------------------------------
  */
+static int intif_parse_CashshopAccount(int fd)
+{
+	int i, len = RFIFOW(fd, 2), count;
+	struct map_session_data *sd;
+	struct cashshop_account_count history[CASHSHOP_ACCOUNT_MAX];
+
+	if(len < 17 || (len - 17) % 8 || (count = (len - 17) / 8) > CASHSHOP_ACCOUNT_MAX)
+		return 0;
+	sd = map_id2sd(RFIFOL(fd, 4));
+	if(!sd || sd->status.char_id != (int)RFIFOL(fd, 8))
+		return 0;
+	for(i = 0; i < count; i++) {
+		history[i].sale_id = RFIFOL(fd, 17 + i * 8);
+		history[i].purchased = RFIFOL(fd, 21 + i * 8);
+	}
+	cashshop_account_receive(sd, RFIFOL(fd, 12), RFIFOB(fd, 16), history, count);
+	return 0;
+}
+
+static int intif_parse_CashshopAccountSaved(int fd)
+{
+	struct map_session_data *sd = map_id2sd(RFIFOL(fd, 2));
+	if(!RFIFOB(fd, 14)) {
+		printf("cashshop: failed to save account %d purchase history\n", RFIFOL(fd, 2));
+		if(sd && sd->status.char_id == (int)RFIFOL(fd, 6) && sd->cashshop_account_token == RFIFOL(fd, 10)) {
+			sd->cashshop_account_loaded = 0;
+			sd->cashshop_account_token = 0;
+			clif_cashshop_account_list(sd);
+		}
+	}
+	return 0;
+}
+
 static int intif_parse_DisplayMessage(int fd)
 {
 	struct map_session_data *sd=map_id2sd(RFIFOL(fd,4));
@@ -2598,6 +2672,8 @@ int intif_parse(int fd)
 	case 0x3891: intif_parse_CharPos(fd); break;
 	case 0x3892: intif_parse_CharMoveReq(fd); break;
 	case 0x3893: intif_parse_DisplayMessage(fd); break;
+	case 0x3894: intif_parse_CashshopAccount(fd); break;
+	case 0x3895: intif_parse_CashshopAccountSaved(fd); break;
 	default:
 		return 0;
 	}

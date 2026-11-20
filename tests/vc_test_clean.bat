@@ -5,8 +5,8 @@ rem Keep lists in sync with Makefile / vc_test.bat (see doc/unit_test.txt).
 setlocal EnableExtensions
 cd /d "%~dp0"
 
-del /Q unit_tests.exe 2>nul
-for %%F in (test_main test_md5calc test_utils test_db test_misc test_status_calc_ctrl test_pc_ui test_cashshop test_stylist test_searchstore test_grf_protected md5calc utils db lock nullpo grf_protected status_calc_ctrl pc_ui cashshop stylist searchstore lz4 unity) do (
+del /Q unit_tests.exe journal_tests.exe 2>nul
+for %%F in (journal test_journal test_cashshop_journal cashshopdb_journal test_cashshop_journal cashshopdb_journal test_main test_md5calc test_utils test_db test_misc test_status_calc_ctrl test_pc_ui test_cashshop test_account_cashshop test_stylist test_searchstore test_grf_protected md5calc utils db lock nullpo grf_protected status_calc_ctrl pc_ui cashshop stylist searchstore cashshopdb_txt lz4 unity) do (
   del /Q %%F.obj 2>nul
 )
 for %%S in (malloc_stub grfio_stub) do (

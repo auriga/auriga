@@ -42,6 +42,7 @@
 #include "int_quest.h"
 #include "int_elem.h"
 #include "int_achieve.h"
+#include "int_cashshop.h"
 
 #define WISDATA_TTL    (60*1000)	// Wisデータの生存時間(60秒)
 #define WISDELLIST_MAX 128		// Wisデータ削除リストの要素数
@@ -57,7 +58,7 @@ int inter_recv_packet_length[] = {
 	10,-1, 0, 0,  0, 0, 0, 0, 10,-1, 0, 0,  0, 0,  0, 0,	// 3060-
 	-1,14,-1,14,  0, 0, 0, 0, 10,-1, 0, 0, -1,14, -1,14,	// 3070-
 	48,14,-1, 6,  0, 0, 0, 0, -1,14,-1,14,  0, 0,  0, 0,	// 3080-
-	31,51,51,-1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
+	31,51,51,-1, -1,-1, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3090-
 };
 
 struct WisData {
@@ -119,6 +120,8 @@ int inter_config_read(const char *cfgName)
 				continue;
 			if(interlog_config_read(w1, w2))
 				continue;
+			if(cashshopdb_config_read(w1,w2))
+				continue;
 			if(accregdb_config_read_sub(w1,w2))
 				continue;
 			if(petdb_config_read_sub(w1,w2))
@@ -167,6 +170,7 @@ int inter_sync(void)
 	partydb_sync();
 	guilddb_sync();
 	accregdb_sync();
+	cashshopdb_sync();
 	storagedb_sync();
 	gstoragedb_sync();
 	maildb_sync();
@@ -498,6 +502,8 @@ int inter_parse_frommap(int fd)
 	case 0x3092: mapif_parse_CharMoveReq(fd);      break;
 	case 0x3093: mapif_parse_DisplayMessage(fd);   break;
 	default:
+		if(inter_cashshop_parse_frommap(fd))
+			break;
 		if( inter_party_parse_frommap(fd) )
 			break;
 		if( inter_guild_parse_frommap(fd) )
@@ -547,6 +553,7 @@ void do_final_inter(void)
 	}
 
 	accregdb_final();
+	cashshopdb_final();
 }
 
 /*==========================================
@@ -568,6 +575,8 @@ int inter_init(const char *file)
 	partydb_init();
 	guilddb_init();
 	accregdb_init();
+	if(!cashshopdb_init())
+		printf("cashshop: purchase history unavailable; account sales disabled\n");
 	storagedb_init();
 	maildb_init();
 	inter_mail_init();

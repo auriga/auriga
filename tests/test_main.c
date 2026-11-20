@@ -96,6 +96,16 @@ void test_searchstore_remote_identity_and_stale_result(void);
 void test_searchstore_buying_and_coordinate_effect(void);
 void test_searchstore_throttle_uses_and_ui(void);
 
+void test_account_cashshop_catalog(void);
+void test_account_cashshop_limit_and_duplicate_rows(void);
+void test_account_cashshop_preflight_and_normal_purchase(void);
+void test_account_cashshop_stale_reply_and_catalog_reload(void);
+void test_account_cashshop_load_failure_and_disconnect(void);
+void test_account_cashshop_txt_restart_and_monotonic_counts(void);
+void test_account_cashshop_txt_rejects_unread_journal(void);
+
+void test_account_cashshop_period_and_ui_close(void);
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -187,6 +197,16 @@ int main(void)
 	RUN_TEST(test_searchstore_remote_identity_and_stale_result);
 	RUN_TEST(test_searchstore_buying_and_coordinate_effect);
 	RUN_TEST(test_searchstore_throttle_uses_and_ui);
+
+	RUN_TEST(test_account_cashshop_catalog);
+	RUN_TEST(test_account_cashshop_limit_and_duplicate_rows);
+	RUN_TEST(test_account_cashshop_preflight_and_normal_purchase);
+	RUN_TEST(test_account_cashshop_stale_reply_and_catalog_reload);
+	RUN_TEST(test_account_cashshop_load_failure_and_disconnect);
+	RUN_TEST(test_account_cashshop_txt_restart_and_monotonic_counts);
+	RUN_TEST(test_account_cashshop_txt_rejects_unread_journal);
+
+	RUN_TEST(test_account_cashshop_period_and_ui_close);
 
 	return UNITY_END();
 }

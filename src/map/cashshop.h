@@ -24,7 +24,10 @@
 
 struct map_session_data;
 
+#include "cashshop_data.h"
+
 #define CASHSHOP_TAB_MAX 9
+#define CASHSHOP_TAB_ACCOUNT 8
 #define CASHSHOP_ITEM_MAX 256
 
 enum cashshop_buy_result {
@@ -54,6 +57,22 @@ int cashshop_buy(struct map_session_data *sd, unsigned int kafra_points, int cou
 
 void cashshop_clear(void);
 int cashshop_insert(int tab, int nameid, int price, unsigned int start_date, unsigned int end_date);
+
+struct cashshop_account_item {
+	int sale_id, nameid, price;
+	unsigned int limit, start_time, end_time;
+};
+
+int cashshop_account_insert(int sale_id, int nameid, int price, unsigned int limit,
+	unsigned int start_time, unsigned int end_time);
+int cashshop_account_item_count(void);
+const struct cashshop_account_item *cashshop_account_item_at(int index);
+int cashshop_account_available(const struct cashshop_account_item *it);
+int cashshop_account_remaining(const struct map_session_data *sd, int sale_id);
+void cashshop_account_request(struct map_session_data *sd);
+void cashshop_account_receive(struct map_session_data *sd, unsigned int token, int ok,
+	const struct cashshop_account_count *history, int count);
+void cashshop_account_close(struct map_session_data *sd);
 
 int do_init_cashshop(void);
 void do_final_cashshop(void);

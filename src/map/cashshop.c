@@ -33,11 +33,18 @@
 #include "battle.h"
 #include "itemdb.h"
 #include "pc.h"
+#include "intif.h"
+#include "chrif.h"
+#include "clif.h"
 #include "unit.h"
 
 /* 商品数を制限し、一覧パケットと購入要求の処理量を一定範囲に収める。 */
 static struct cashshop_item cashshop_db[CASHSHOP_ITEM_MAX];
 static int cashshop_num = 0;
+static struct cashshop_account_item cashshop_account_db[CASHSHOP_ACCOUNT_MAX];
+static int cashshop_account_num;
+static unsigned int cashshop_account_generation = 1, cashshop_account_token;
+
 
 static unsigned int cashshop_today(void)
 {
@@ -78,6 +85,10 @@ int cashshop_item_available(const struct cashshop_item *it)
 void cashshop_clear(void)
 {
 	cashshop_num = 0;
+	cashshop_account_num = 0;
+	memset(cashshop_account_db, 0, sizeof(cashshop_account_db));
+	if(++cashshop_account_generation == 0)
+		cashshop_account_generation = 1;
 	memset(cashshop_db, 0, sizeof(cashshop_db));
 }
 
@@ -105,7 +116,7 @@ int cashshop_insert(int tab, int nameid, int price, unsigned int start_date, uns
 	struct cashshop_item *item;
 	int i;
 
-	if(tab < 0 || tab >= CASHSHOP_TAB_MAX || nameid <= 0 || price < 0)
+	if(tab < 0 || tab >= CASHSHOP_TAB_ACCOUNT || nameid <= 0 || price < 0)
 		return 0;
 	if(!cashshop_valid_date(start_date) || !cashshop_valid_date(end_date) ||
 	   (start_date > 0 && end_date > 0 && start_date > end_date))
@@ -146,6 +157,150 @@ int cashshop_find_price(int tab, int nameid)
 	return -1;
 }
 
+/*==========================================
+ * アカウント限定商品と購入履歴
+ *------------------------------------------
+ */
+int cashshop_account_insert(int sale_id, int nameid, int price, unsigned int limit,
+	unsigned int start_time, unsigned int end_time)
+{
+	int i;
+	struct cashshop_account_item *it;
+
+	if(sale_id <= 0 || !itemdb_exists(nameid) || price < 0 || limit == 0 || limit > INT_MAX ||
+	   start_time == 0 || end_time <= start_time || cashshop_account_num >= CASHSHOP_ACCOUNT_MAX)
+		return 0;
+	for(i = 0; i < cashshop_account_num; i++) {
+		if(cashshop_account_db[i].sale_id == sale_id || cashshop_account_db[i].nameid == nameid)
+			return 0;
+	}
+	it = &cashshop_account_db[cashshop_account_num++];
+	it->sale_id = sale_id;
+	it->nameid = nameid;
+	it->price = price;
+	it->limit = limit;
+	it->start_time = start_time;
+	it->end_time = end_time;
+	return 1;
+}
+
+int cashshop_account_item_count(void) { return cashshop_account_num; }
+
+const struct cashshop_account_item *cashshop_account_item_at(int index)
+{
+	return index >= 0 && index < cashshop_account_num ? &cashshop_account_db[index] : NULL;
+}
+
+int cashshop_account_available(const struct cashshop_account_item *it)
+{
+	time_t now = time(NULL);
+	return it && now >= 0 && (uint64)now >= it->start_time && (uint64)now < it->end_time;
+}
+
+static int cashshop_account_history_index(const struct map_session_data *sd, int sale_id)
+{
+	int i;
+	if(!sd || !sd->cashshop_account_loaded ||
+	   sd->cashshop_account_generation != cashshop_account_generation)
+		return -1;
+	for(i = 0; i < sd->cashshop_account_count; i++) {
+		if(sd->cashshop_account_history[i].sale_id == sale_id)
+			return i;
+	}
+	return -1;
+}
+
+int cashshop_account_remaining(const struct map_session_data *sd, int sale_id)
+{
+	int i, index = cashshop_account_history_index(sd, sale_id);
+	if(index < 0)
+		return -1;
+	for(i = 0; i < cashshop_account_num; i++) {
+		if(cashshop_account_db[i].sale_id == sale_id) {
+			unsigned int limit = cashshop_account_db[i].limit;
+			unsigned int used = sd->cashshop_account_history[index].purchased;
+			return used >= limit ? 0 : (int)(limit - used);
+		}
+	}
+	return -1;
+}
+
+void cashshop_account_close(struct map_session_data *sd)
+{
+	if(!sd)
+		return;
+	aFree(sd->cashshop_account_history);
+	sd->cashshop_account_history = NULL;
+	sd->cashshop_account_count = 0;
+	sd->cashshop_account_token = sd->cashshop_account_generation = 0;
+	sd->cashshop_account_loaded = 0;
+}
+
+void cashshop_account_request(struct map_session_data *sd)
+{
+	int i, available = 0;
+
+	nullpo_retv(sd);
+	if(!pc_ui_is(sd, PC_UI_CASHSHOP))
+		return;
+	for(i = 0; i < cashshop_account_num; i++) {
+		if(cashshop_account_available(&cashshop_account_db[i]))
+			available = 1;
+	}
+	if(!battle_config.feature_cashshop || !available || !chrif_isconnect()) {
+		cashshop_account_close(sd);
+		clif_cashshop_account_list(sd);
+		return;
+	}
+	/* 連打による履歴ロードを抑え、応答消失時は再要求できるようにする。 */
+	if(sd->cashshop_account_token && !sd->cashshop_account_loaded &&
+	   time(NULL) - sd->cashshop_account_query_time < 5)
+		return;
+	if(sd->cashshop_account_loaded && sd->cashshop_account_generation == cashshop_account_generation) {
+		clif_cashshop_account_list(sd);
+		return;
+	}
+
+	cashshop_account_close(sd);
+	sd->cashshop_account_count = cashshop_account_num;
+	sd->cashshop_account_history = (struct cashshop_account_count *)aCalloc(
+		cashshop_account_num, sizeof(*sd->cashshop_account_history));
+	for(i = 0; i < cashshop_account_num; i++)
+		sd->cashshop_account_history[i].sale_id = cashshop_account_db[i].sale_id;
+	if(++cashshop_account_token == 0)
+		cashshop_account_token = 1;
+	sd->cashshop_account_token = cashshop_account_token;
+	sd->cashshop_account_generation = cashshop_account_generation;
+	sd->cashshop_account_query_time = time(NULL);
+	if(!intif_cashshop_account_request(sd)) {
+		cashshop_account_close(sd);
+		clif_cashshop_account_list(sd);
+	}
+}
+
+void cashshop_account_receive(struct map_session_data *sd, unsigned int token, int ok,
+	const struct cashshop_account_count *history, int count)
+{
+	int i;
+	if(!sd || !pc_ui_is(sd, PC_UI_CASHSHOP) || sd->cashshop_account_loaded ||
+	   !token || token != sd->cashshop_account_token ||
+	   sd->cashshop_account_generation != cashshop_account_generation)
+		return;
+	if(!ok || !history || count != sd->cashshop_account_count)
+		goto failed;
+	for(i = 0; i < count; i++) {
+		if(history[i].sale_id != sd->cashshop_account_history[i].sale_id || history[i].purchased > INT_MAX)
+			goto failed;
+	}
+	memcpy(sd->cashshop_account_history, history, count * sizeof(*history));
+	sd->cashshop_account_loaded = 1;
+	clif_cashshop_account_list(sd);
+	return;
+failed:
+	cashshop_account_close(sd);
+	clif_cashshop_account_list(sd);
+}
+
 /* pc_additemと同じ規則で仮の所持欄に全商品を追加する。 */
 static int cashshop_checkadd(struct item *inventory, int slots, struct item_data *data, int amount)
 {
@@ -181,6 +336,7 @@ int cashshop_buy(struct map_session_data *sd, unsigned int kafra_points, int cou
 	struct item *inventory;
 	struct item_data *data[CASHSHOP_ITEM_MAX];
 	int amount[CASHSHOP_ITEM_MAX], prices[CASHSHOP_ITEM_MAX];
+	int history_index[CASHSHOP_ITEM_MAX], limited_changed = 0;
 	atn_bignumber total = 0, weight;
 	int i, j, slots, result = CASHSHOP_RESULT_SUCCESS;
 
@@ -208,9 +364,30 @@ int cashshop_buy(struct map_session_data *sd, unsigned int kafra_points, int cou
 		memcpy(&number, p + 4, sizeof(number));
 		memcpy(&tab, p + 8, sizeof(tab));
 
+		history_index[i] = -1;
+		prices[i] = -1;
+		if(tab == CASHSHOP_TAB_ACCOUNT && nameid > 0 && nameid <= INT_MAX && chrif_isconnect()) {
+			for(j = 0; j < cashshop_account_num; j++) {
+				const struct cashshop_account_item *it = &cashshop_account_db[j];
+				if(it->nameid == (int)nameid && cashshop_account_available(it)) {
+					int k, remain = cashshop_account_remaining(sd, it->sale_id);
+					/* 同一明細内の重複指定も合算して上限を確認する。 */
+					for(k = 0; k < i; k++) {
+						if(history_index[k] >= 0 && sd->cashshop_account_history[history_index[k]].sale_id == it->sale_id)
+							remain -= amount[k];
+					}
+					if(remain < 0 || number > (unsigned int)remain)
+						break;
+					history_index[i] = cashshop_account_history_index(sd, it->sale_id);
+					prices[i] = it->price;
+					break;
+				}
+			}
+		} else if(tab < CASHSHOP_TAB_ACCOUNT) {
+			prices[i] = cashshop_find_price(tab, (int)nameid);
+		}
 		if(nameid == 0 || nameid > INT_MAX || number == 0 || number > MAX_AMOUNT ||
-		   (data[i] = itemdb_exists((int)nameid)) == NULL || data[i]->weight < 0 ||
-		   (prices[i] = cashshop_find_price(tab, (int)nameid)) < 0) {
+		   (data[i] = itemdb_exists((int)nameid)) == NULL || data[i]->weight < 0 || prices[i] < 0) {
 			result = CASHSHOP_RESULT_ERROR_UNKNOWN_ITEM;
 			break;
 		}
@@ -247,11 +424,21 @@ int cashshop_buy(struct map_session_data *sd, unsigned int kafra_points, int cou
 			if(pc_additem(sd, &it, number, false)) {
 				// 検証済みのため通常到達しない。未付与分は課金しない。
 				printf("cashshop_buy: unexpected add failure, char %d item %d\n", sd->status.char_id, it.nameid);
+				if(limited_changed)
+					intif_cashshop_account_save(sd);
 				return CASHSHOP_RESULT_ERROR_SYSTEM;
+			}
+			if(history_index[i] >= 0) {
+				sd->cashshop_account_history[history_index[i]].purchased += number;
+				limited_changed = 1;
 			}
 			sd->shop_point -= BIGNUM2INT((atn_bignumber)prices[i] * number);
 			pc_setglobalreg(sd, "PC_SHOP_POINT", sd->shop_point);
 		}
+	}
+	if(limited_changed) {
+		intif_cashshop_account_save(sd);
+		clif_cashshop_account_list(sd);
 	}
 	return CASHSHOP_RESULT_SUCCESS;
 }
