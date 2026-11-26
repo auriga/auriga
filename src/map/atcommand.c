@@ -41,6 +41,7 @@
 #include "clif.h"
 #include "itemdb.h"
 #include "pc.h"
+#include "emotion_pack.h"
 #include "skill.h"
 #include "mob.h"
 #include "pet.h"
@@ -217,6 +218,7 @@ ATCOMMAND_FUNC(resetstate);
 ATCOMMAND_FUNC(resetskill);
 ATCOMMAND_FUNC(resetcooltime);
 ATCOMMAND_FUNC(emotion);
+ATCOMMAND_FUNC(emotionpack);
 ATCOMMAND_FUNC(statall);
 ATCOMMAND_FUNC(rankingpoint);
 ATCOMMAND_FUNC(viewclass);
@@ -400,6 +402,7 @@ static AtCommandInfo atcommand_info[] = {
 	{ AtCommand_ResetSkill,         "@resetskill",       0, atcommand_resetskill,          NULL },
 	{ AtCommand_ResetCooltime,      "@resetcooltime",    1, atcommand_resetcooltime,       NULL },
 	{ AtCommand_emotion,            "@emotion",          0, atcommand_emotion,             NULL },
+	{ AtCommand_EmotionPack,        "@emotionpack",      0, atcommand_emotionpack,         NULL },
 	{ AtCommand_statall,            "@statall",          0, atcommand_statall,             NULL },
 	{ AtCommand_RankingPoint,       "@rankingpoint",     0, atcommand_rankingpoint,        NULL },
 	{ AtCommand_ViewClass,          "@viewclass",        0, atcommand_viewclass,           NULL },
@@ -5089,6 +5092,26 @@ int atcommand_emotion(const int fd, struct map_session_data* sd, AtCommandType c
 
 	clif_emotion(&sd->bl, atoi(message));
 
+	return 0;
+}
+
+int atcommand_emotionpack(const int fd, struct map_session_data* sd, AtCommandType command, const char* message)
+{
+	int pack_id;
+	char extra;
+
+	nullpo_retr(-1, sd);
+	(void)command;
+	if(!message)
+		return -1;
+	if(sscanf(message, "%d %c", &pack_id, &extra) != 1)
+		return -1;
+	if(emotion_pack_unlock(sd, pack_id) != 0) {
+		clif_displaymessage(fd, "emotionpack: failed (invalid id or registry not ready)");
+		return -1;
+	}
+	clif_emotion_pack_acquired(sd, pack_id);
+	clif_displaymessage(fd, "emotionpack: unlocked");
 	return 0;
 }
 

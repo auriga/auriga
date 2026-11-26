@@ -183,6 +183,7 @@ typedef enum {
 	AtCommand_ResetFeel,
 	AtCommand_ResetHate,
 	AtCommand_emotion,
+	AtCommand_EmotionPack,
 	AtCommand_statall,
 	AtCommand_RankingPoint,
 	AtCommand_ViewClass,

@@ -193,6 +193,7 @@ static void status_calc_pc_phase_clear(struct map_session_data *sd)
 	sd->castrate            = 100;
 	sd->fixcastrate         = 0;
 	sd->fixcastrate_        = 0;
+	sd->fixcastrate_increase = 0;
 	sd->dsprate             = 100;
 	sd->base_atk            = 0;
 	sd->status.max_ap       = 0;

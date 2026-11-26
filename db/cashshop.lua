@@ -62,7 +62,7 @@ CashshopTBL = {
 	{ Tab = TAB_OTHER, ItemID = 16674, Price = 7500, StartDate = 0, EndDate = 0 },
 	{ Tab = TAB_OTHER, ItemID = 17289, Price = 5000, StartDate = 0, EndDate = 0 },
 	{ Tab = TAB_OTHER, ItemID = 12910, Price = 500, StartDate = 0, EndDate = 0 },
-	-- { Tab = TAB_OTHER, ItemID = 200488, Price = 5000, StartDate = 0, EndDate = 0 },
+	{ Tab = TAB_OTHER, ItemID = 200488, Price = 5000, StartDate = 0, EndDate = 0 },
 	{ Tab = TAB_OTHER, ItemID = 200513, Price = 5000, StartDate = 0, EndDate = 0 },
 	-- { Tab = TAB_OTHER, ItemID = 17159, Price = 5000, StartDate = 0, EndDate = 0 },
 	-- { Tab = TAB_OTHER, ItemID = 201145, Price = 5000, StartDate = 0, EndDate = 0 },

@@ -357,6 +357,19 @@ int battle_heal(struct block_list *bl,struct block_list *target,int hp,int sp,in
 }
 
 /*==========================================
+ * 耐性の上限補正
+ *------------------------------------------
+ */
+static inline int battle_limit_resistance(int rate)
+{
+#ifndef PRE_RENEWAL
+	if(rate > 95)
+		return 95;
+#endif
+	return rate;
+}
+
+/*==========================================
  * ダメージの属性修正
  *------------------------------------------
  */
@@ -1864,6 +1877,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	int s_ele, s_ele_, s_str;
 	int t_vit, t_race, t_ele, t_enemy, t_size, t_mode, t_group, t_class;
 	int t_flee, t_def1, t_def2, t_res;
+#ifndef PRE_RENEWAL
+	int res_rh, res_lh;
+#endif
 	int cardfix, skill, damage_sbr = 0;
 	int ignored_rate = 100, ignored_rate_ = 100;
 	int i;
@@ -2034,7 +2050,8 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 	/* ４．右手・左手判定 */
 	calc_flag.rh = 1;		// 基本は右手のみ
 	if(src_sd && skill_num == 0) {	// スキル攻撃は常に右手を参照
-		if((src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) || (src_sd->status.weapon >= WT_DOUBLE_DD || src_sd->status.weapon == WT_KATAR))
+		if((src_sd->weapontype1 == WT_FIST && src_sd->weapontype2 > WT_FIST) ||
+		   src_sd->status.weapon >= WT_DOUBLE_DD || src_sd->status.weapon == WT_KATAR)
 			calc_flag.lh = 1;	// 左手も計算
 	}
 
@@ -2917,21 +2934,21 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			int ele_type= status_get_elem_type(src);
 			cardfix = 100;
 			if (s_ele == ELE_NONE)
-				cardfix = cardfix*(100-target_sd->subele[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->subele[ELE_NEUTRAL]))/100;	// 属性無しの耐性は無属性
 			else
-				cardfix = cardfix*(100-target_sd->subele[s_ele])/100;		// 属性によるダメージ耐性
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->subele[s_ele]))/100;		// 属性によるダメージ耐性
 			if (ele_type == ELE_NONE)
-				cardfix = cardfix*(100-target_sd->def_eleenemy[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->def_eleenemy[ELE_NEUTRAL]))/100;	// 属性無しの耐性は無属性
 			else
-				cardfix = cardfix*(100-target_sd->def_eleenemy[ele_type])/100;		// 敵属性によるダメージ耐性
-			cardfix = cardfix*(100-target_sd->subenemy[s_enemy])/100;		// 敵タイプによるダメージ耐性
-			cardfix = cardfix*(100-target_sd->subsize[s_size])/100;			// サイズによるダメージ耐性
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->def_eleenemy[ele_type]))/100;		// 敵属性によるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->subenemy[s_enemy]))/100;		// 敵タイプによるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->subsize[s_size]))/100;			// サイズによるダメージ耐性
 			cardfix = cardfix*(100-target_sd->subgroup[s_group])/100;		// グループによるダメージ耐性
 
 			if(status_get_mode(src) & MD_BOSS)
-				cardfix = cardfix*(100-target_sd->subrace[RCT_BOSS])/100;	// ボスからの攻撃はダメージ減少
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[RCT_BOSS]))/100;	// ボスからの攻撃はダメージ減少
 			else
-				cardfix = cardfix*(100-target_sd->subrace[RCT_NONBOSS])/100;	// ボス以外からの攻撃はダメージ減少
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[RCT_NONBOSS]))/100;	// ボス以外からの攻撃はダメージ減少
 
 			// 特定Class用補正処理左手(少女の日記→ボンゴン用？)
 			for(i=0; i<target_sd->add_def_class_count; i++) {
@@ -2941,7 +2958,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 				}
 			}
 			if(wd.flag&BF_LONG && !(src_md && (skill_num == AC_SHOWER || skill_num == SN_SHARPSHOOTING)) )
-				cardfix = cardfix*(100-target_sd->long_attack_def_rate)/100;	// 遠距離攻撃はダメージ減少(ホルンCとか)
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->long_attack_def_rate))/100;	// 遠距離攻撃はダメージ減少(ホルンCとか)
 			if(wd.flag&BF_SHORT)
 				cardfix = cardfix*(100-target_sd->near_attack_def_rate)/100;	// 近距離攻撃はダメージ減少(該当無し？)
 			DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
@@ -3082,6 +3099,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 					wd.damage2 += hit_bonus + src_sd->star_ + src_sd->ranker_weapon_bonus_;
 			}
 
+			/* P.Atkは修練Atkとスキル倍率より先に適用する。 */
+			DMG_FIX( 100 + status_get_patk(src), 100 );
+
 			switch(skill_num) {
 			case MC_CARTREVOLUTION:
 			case MO_INVESTIGATE:
@@ -3163,9 +3183,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			int s_race  = status_get_race(src);
 			cardfix = 100;
 			if(t_sc && t_sc->data[SC_ANTI_M_BLAST].timer != -1)
-				cardfix = cardfix*(100-target_sd->subrace[s_race]-t_sc->data[SC_ANTI_M_BLAST].val2)/100;			// 種族によるダメージ耐性
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[s_race] + t_sc->data[SC_ANTI_M_BLAST].val2))/100;			// 種族によるダメージ耐性
 			else
-				cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
+				cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[s_race]))/100;			// 種族によるダメージ耐性
 			DMG_FIX( cardfix, 100 );	// カード補正によるダメージ減少
 		}
 
@@ -5594,10 +5614,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		if(add_rate > 0)
 			add_rate = 0;
 
+#ifdef PRE_RENEWAL
 		/* 13. P.Atkによる物理攻撃ダメージ増加 */
 		DMG_FIX( 100 + status_get_patk(src), 100 );
 
-#ifdef PRE_RENEWAL
 		/* 14．ファイティングの追加ダメージ */
 		wd.damage += tk_power_damage;
 		if(calc_flag.lh)
@@ -5724,10 +5744,16 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			if(res_rate != 100) {
 				t_res = t_res * res_rate / 100;
 			}
+#ifdef PRE_RENEWAL
 			wd.damage = wd.damage * (2000 + t_res) / (2000 + t_res * 5);
 			if(calc_flag.lh)
 				wd.damage2 = wd.damage2 * (2000 + t_res) / (2000 + t_res * 5);
+#endif
 		}
+
+#ifndef PRE_RENEWAL
+		res_rh = res_lh = t_res;
+#endif
 
 		/* 17．対象の防御力によるダメージの減少 */
 		switch (skill_num) {
@@ -5909,6 +5935,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 						int vitbonus_fix = vitbonusmax * ignored_rate / 100;
 
 						if(battle_config.player_defense_type) {
+#ifndef PRE_RENEWAL
+							wd.damage = wd.damage * (2000 + res_rh) / (2000 + res_rh * 5);
+							res_rh = 0;
+#endif
 							wd.damage = wd.damage - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot = damage_ot - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 						} else {
@@ -5916,7 +5946,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							wd.damage = wd.damage * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot = damage_ot * (100 - t_def1_fix) /100;
 #else
-							wd.damage = wd.damage * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix) - t_def2_fix;
+							wd.damage = wd.damage * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
+							wd.damage = wd.damage * (2000 + res_rh) / (2000 + res_rh * 5) - t_def2_fix;
+							res_rh = 0;
 							damage_ot = damage_ot * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
 #endif
 						}
@@ -5930,6 +5962,10 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 						int vitbonus_fix = vitbonusmax * ignored_rate_ / 100;
 
 						if(battle_config.player_defense_type) {
+#ifndef PRE_RENEWAL
+							wd.damage2 = wd.damage2 * (2000 + res_lh) / (2000 + res_lh * 5);
+							res_lh = 0;
+#endif
 							wd.damage2 = wd.damage2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot2 = damage_ot2 - (t_def1_fix * battle_config.player_defense_type) - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 						} else {
@@ -5937,7 +5973,9 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 							wd.damage2 = wd.damage2 * (100 - t_def1_fix) /100 - t_def2_fix - ((vitbonus_fix < 1)? 0: atn_rand()%(vitbonus_fix + 1) );
 							damage_ot2 = damage_ot2 * (100 - t_def1_fix) /100;
 #else
-							wd.damage2 = wd.damage2 * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix) - t_def2_fix;
+							wd.damage2 = wd.damage2 * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
+							wd.damage2 = wd.damage2 * (2000 + res_lh) / (2000 + res_lh * 5) - t_def2_fix;
+							res_lh = 0;
 							damage_ot2 = damage_ot2 * (4000 + t_def1_fix) / (4000 + 10 * t_def1_fix);
 #endif
 						}
@@ -5946,6 +5984,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 			break;
 		}
+#ifndef PRE_RENEWAL
+		/* Defを無視する場合もResは適用する。 */
+		if(res_rh)
+			wd.damage = wd.damage * (2000 + res_rh) / (2000 + res_rh * 5);
+		if(calc_flag.lh && res_lh)
+			wd.damage2 = wd.damage2 * (2000 + res_lh) / (2000 + res_lh * 5);
+#endif
+
 
 		// ペインキラー
 		if(t_sc && t_sc->data[SC_PAIN_KILLER].timer != -1) {
@@ -6350,23 +6396,23 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 		int s_group = status_get_group(src);
 		int ele_type= status_get_elem_type(src);
 		cardfix = 100;
-		cardfix = cardfix*(100-target_sd->subrace[s_race])/100;			// 種族によるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[s_race]))/100;			// 種族によるダメージ耐性
 		if (s_ele == ELE_NONE)
-			cardfix = cardfix*(100-target_sd->subele[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->subele[ELE_NEUTRAL]))/100;	// 属性無しの耐性は無属性
 		else
-			cardfix = cardfix*(100-target_sd->subele[s_ele])/100;		// 属性によるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->subele[s_ele]))/100;		// 属性によるダメージ耐性
 		if (ele_type == ELE_NONE)
-			cardfix = cardfix*(100-target_sd->def_eleenemy[ELE_NEUTRAL])/100;	// 属性無しの耐性は無属性
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->def_eleenemy[ELE_NEUTRAL]))/100;	// 属性無しの耐性は無属性
 		else
-			cardfix = cardfix*(100-target_sd->def_eleenemy[ele_type])/100;		// 敵属性によるダメージ耐性
-		cardfix = cardfix*(100-target_sd->subenemy[s_enemy])/100;		// 敵タイプによるダメージ耐性
-		cardfix = cardfix*(100-target_sd->subsize[s_size])/100;			// サイズによるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->def_eleenemy[ele_type]))/100;		// 敵属性によるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(target_sd->subenemy[s_enemy]))/100;		// 敵タイプによるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(target_sd->subsize[s_size]))/100;			// サイズによるダメージ耐性
 		cardfix = cardfix*(100-target_sd->subgroup[s_group])/100;		// グループによるダメージ耐性
 
 		if(status_get_mode(src) & MD_BOSS)
-			cardfix = cardfix*(100-target_sd->subrace[RCT_BOSS])/100;	// ボスからの攻撃はダメージ減少
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[RCT_BOSS]))/100;	// ボスからの攻撃はダメージ減少
 		else
-			cardfix = cardfix*(100-target_sd->subrace[RCT_NONBOSS])/100;	// ボス以外からの攻撃はダメージ減少
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->subrace[RCT_NONBOSS]))/100;	// ボス以外からの攻撃はダメージ減少
 
 		// 特定Class用補正処理左手(少女の日記→ボンゴン用？)
 		for(i=0; i<target_sd->add_def_class_count; i++) {
@@ -6376,7 +6422,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src,struct blo
 			}
 		}
 		if(wd.flag&BF_LONG && !(src_md && (skill_num == AC_SHOWER || skill_num == SN_SHARPSHOOTING)) )
-			cardfix = cardfix*(100-target_sd->long_attack_def_rate)/100;	// 遠距離攻撃はダメージ減少(ホルンCとか)
+			cardfix = cardfix*(100-battle_limit_resistance(target_sd->long_attack_def_rate))/100;	// 遠距離攻撃はダメージ減少(ホルンCとか)
 		if(wd.flag&BF_SHORT)
 			cardfix = cardfix*(100-target_sd->near_attack_def_rate)/100;	// 近距離攻撃はダメージ減少(該当無し？)
 
@@ -7206,6 +7252,7 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 
 	// ファイアーピラー
 	if(skill_num == WZ_FIREPILLAR) {
+		MATK_FIX( 100 + status_get_smatk(bl), 100 );
 		if(bl->type == BL_MOB) {
 			MATK_FIX( 200+100*skill_lv, 100 );
 		} else {
@@ -7235,6 +7282,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 		}
 		mgd.damage = mgd.damage*cardfix/100;
 	}
+
+	/* 特化を含む基礎Matkにスキル倍率より先に適用する。 */
+	if(skill_num != WZ_FIREPILLAR)
+		MATK_FIX( 100 + status_get_smatk(bl), 100 );
 #endif
 
 	/* スキル倍率計算に加算 */
@@ -8540,8 +8591,10 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	if(normalmagic_flag) {
 		int rate = 100;
 
+#ifdef PRE_RENEWAL
 		// S.Matkによる魔法攻撃ダメージ増加
 		MATK_FIX( 100 + status_get_smatk(bl), 100 );
+#endif
 
 		if(sd) {
 			rate = rate - sd->ignore_mdef_ele[t_ele] - sd->ignore_mdef_race[t_race] - sd->ignore_mdef_enemy[t_enemy];
@@ -8550,6 +8603,32 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			else
 				rate -= sd->ignore_mdef_race[RCT_NONBOSS];
 		}
+
+		// Mresによる魔法ダメージ減少
+		if(mres > 0) {
+			int mres_rate = 100;
+			if(sc) {
+				if(sc->data[SC_A_VITA].timer != -1) {		// アルグトゥスヴィタ
+					mres_rate -= sc->data[SC_A_VITA].val2;
+				}
+			}
+			if(sd) {
+				if(t_race >= 0 && t_race < RCT_MAX)
+					mres_rate -= sd->ignore_mres_race[t_race];
+				if(t_mode & MD_BOSS)
+					mres_rate -= sd->ignore_mres_race[RCT_BOSS];
+				else
+					mres_rate -= sd->ignore_mres_race[RCT_NONBOSS];
+			}
+			if(mres_rate < 50) {
+				mres_rate = 50;
+			}
+			if(mres_rate != 100) {
+				mres = mres * mres_rate / 100;
+			}
+			mgd.damage = mgd.damage * (2000 + mres) / (2000 + mres * 5);
+		}
+
 		if(rate > 0) {
 			mdef1 = mdef1 * rate / 100;
 			mdef2 = mdef2 * rate / 100;
@@ -8582,30 +8661,6 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 			}
 #endif
 
-			// Mresによる魔法ダメージ減少
-			if(mres > 0) {
-				int mres_rate = 100;
-				if(sc) {
-					if(sc->data[SC_A_VITA].timer != -1) {		// アルグトゥスヴィタ
-						mres_rate -= sc->data[SC_A_VITA].val2;
-					}
-				}
-				if(sd) {
-					if(t_race >= 0 && t_race < RCT_MAX)
-						mres_rate -= sd->ignore_mres_race[t_race];
-					if(t_mode & MD_BOSS)
-						mres_rate -= sd->ignore_mres_race[RCT_BOSS];
-					else
-						mres_rate -= sd->ignore_mres_race[RCT_NONBOSS];
-				}
-				if(mres_rate < 50) {
-					mres_rate = 50;
-				}
-				if(mres_rate != 100) {
-					mres = mres * mres_rate / 100;
-				}
-				mgd.damage = mgd.damage * (2000 + mres) / (2000 + mres * 5);
-			}
 
 			if(battle_config.magic_defense_type) {
 				mgd.damage = mgd.damage - (mdef1 * battle_config.magic_defense_type) - mdef2;
@@ -8674,16 +8729,16 @@ static struct Damage battle_calc_magic_attack(struct block_list *bl,struct block
 	if(tsd && mgd.damage > 0 && skill_num != NPC_EARTHQUAKE && skill_num != NPC_CANE_OF_EVIL_EYE) {
 		int s_class = status_get_class(bl);
 		cardfix = 100;
-		cardfix = cardfix*(100-tsd->subele[ele])/100;				// 属性によるダメージ耐性
-		cardfix = cardfix*(100-tsd->def_eleenemy[status_get_elem_type(bl)])/100;				// 敵属性によるダメージ耐性
-		cardfix = cardfix*(100-tsd->subenemy[status_get_enemy_type(bl)])/100;	// 敵タイプによるダメージ耐性
-		cardfix = cardfix*(100-tsd->magic_subsize[status_get_size(bl)])/100;		// サイズによるダメージ耐性
-		cardfix = cardfix*(100-tsd->magic_subrace[race])/100;
-		cardfix = cardfix*(100-tsd->long_attack_def_rate)/100;	// 遠距離耐性によるダメージ減少
+		cardfix = cardfix*(100-battle_limit_resistance(tsd->subele[ele]))/100;				// 属性によるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(tsd->def_eleenemy[status_get_elem_type(bl)]))/100;				// 敵属性によるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(tsd->subenemy[status_get_enemy_type(bl)]))/100;	// 敵タイプによるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(tsd->magic_subsize[status_get_size(bl)]))/100;		// サイズによるダメージ耐性
+		cardfix = cardfix*(100-battle_limit_resistance(tsd->magic_subrace[race]))/100;
+		cardfix = cardfix*(100-battle_limit_resistance(tsd->long_attack_def_rate))/100;	// 遠距離耐性によるダメージ減少
 		if(status_get_mode(bl) & MD_BOSS)
-			cardfix = cardfix*(100-tsd->magic_subrace[RCT_BOSS])/100;
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->magic_subrace[RCT_BOSS]))/100;
 		else
-			cardfix = cardfix*(100-tsd->magic_subrace[RCT_NONBOSS])/100;
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->magic_subrace[RCT_NONBOSS]))/100;
 		for(i=0; i<tsd->add_mdef_class_count; i++) {
 			if(tsd->add_mdef_classid[i] == s_class) {
 				cardfix = cardfix*(100-tsd->add_mdef_classrate[i])/100;
@@ -9143,11 +9198,11 @@ static struct Damage battle_calc_misc_attack(struct block_list *bl,struct block_
 		/* ３．カードによるダメージ減衰処理 */
 		if(tsd && mid.damage > 0) {
 			int cardfix = 100;
-			cardfix = cardfix*(100-tsd->subele[ele])/100;	// 属性によるダメージ耐性
-			cardfix = cardfix*(100-tsd->def_eleenemy[status_get_elem_type(bl)])/100;	// 敵属性によるダメージ耐性
-			cardfix = cardfix*(100-tsd->subrace[race])/100;	// 種族によるダメージ耐性
-			cardfix = cardfix*(100-tsd->subenemy[status_get_enemy_type(bl)])/100;	// 敵タイプによるダメージ耐性
-			cardfix = cardfix*(100-tsd->subsize[status_get_size(bl)])/100;	// サイズによるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->subele[ele]))/100;	// 属性によるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->def_eleenemy[status_get_elem_type(bl)]))/100;	// 敵属性によるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->subrace[race]))/100;	// 種族によるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->subenemy[status_get_enemy_type(bl)]))/100;	// 敵タイプによるダメージ耐性
+			cardfix = cardfix*(100-battle_limit_resistance(tsd->subsize[status_get_size(bl)]))/100;	// サイズによるダメージ耐性
 			cardfix = cardfix*(100-tsd->misc_def_rate)/100;
 			mid.damage = mid.damage*cardfix/100;
 		}
@@ -11238,6 +11293,7 @@ int battle_config_read(const char *cfgName)
 		{ "searchstore_querydelay",             &battle_config.searchstore_querydelay,             10       },
 		{ "searchstore_maxresults",             &battle_config.searchstore_maxresults,             30       },
 		{ "feature_cashshop",                   &battle_config.feature_cashshop,                   1        },
+		{ "feature_emotion_cash",               &battle_config.feature_emotion_cash,               1        },
 		{ "feature_petevolution",               &battle_config.feature_petevolution,               1        },
 		{ "pet_friendly_rate",                  &battle_config.pet_friendly_rate,                  100      },
 		{ "pet_hungry_delay_rate",              &battle_config.pet_hungry_delay_rate,              100      },

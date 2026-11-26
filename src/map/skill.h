@@ -285,6 +285,7 @@ void skill_shadowform2(struct map_session_data *dstsd);
 #else
 	#define skill_calc_heal(bl,skill_lv) ( ((status_get_lv(bl) + status_get_int(bl)) / 5) * 3 * skill_lv )
 #endif
+int skill_fix_base_heal(struct block_list *src, struct block_list *bl, int skill_id, int skill_lv, int multiplier_per_mille);
 int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal);
 
 int skill_castend_id(int tid, unsigned int tick, int id, void *data);

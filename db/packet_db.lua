@@ -2020,7 +2020,7 @@ p(0x0be5,8)
 p(0x0be6,8)
 p(0x0be7,4)
 p(0x0be8,4)
-p(0x0be9,6,"emotion2",4)
+p(0x0be9,6)
 p(0x0bea,10)
 p(0x0beb,7)
 p(0x0bec,7)
@@ -3517,7 +3517,11 @@ if packet_ver >= 20220831 then
 	p(0x0bbe,6)
 end
 
--- 2023-12-20以降のスタイルショップ（職業別衣装変更を含む）
+if packet_ver >= 20230705 then
+	p(0x0be9,6,"emotion2",{2,4})
+	p(0x0bec,9,"buyemotionpack",{2})
+end
+
 if packet_ver >= 20231220 then
 	p(0x0bf7,-1,"stylistbuy",0)
 end

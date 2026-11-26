@@ -117,12 +117,16 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		{
 			int heal;
 			int heal_get_jobexp;
-			int lv;
-			lv = (skillid == AB_HIGHNESSHEAL)? 10: skilllv;
-			heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, lv));
+			heal = skill_fix_base_heal(src, bl, skillid, skilllv,
+				(skillid == AB_HIGHNESSHEAL) ? 1700 + 300 * skilllv : 1000);
 			sc = status_get_sc(bl);
-			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over)
-				heal = 9999;	// 9999ƒq[ƒ‹
+			if(md && battle_config.monster_skill_over && skilllv >= battle_config.monster_skill_over) {
+				heal = 9999;
+#ifndef PRE_RENEWAL
+				if(skillid == AB_HIGHNESSHEAL)
+					heal = heal * (170 + 30 * skilllv) / 100;
+#endif
+			}	// 9999ƒq[ƒ‹
 			if(dstsd && dstsd->special_state.no_magic_damage)
 				heal = 0;	// ‰©‹àå³ƒJ[ƒhiƒq[ƒ‹—Ê‚Oj
 			if(sc && sc->data[SC_BERSERK].timer != -1)
@@ -131,8 +135,10 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 				heal = 0; 	// –‚“¹ƒMƒA“‹æ’†‚Íƒq[ƒ‹‚O
 			if(sd && dstsd && sd->status.partner_id == dstsd->status.char_id && (sd->s_class.job == PC_CLASS_SNV || sd->s_class.job == PC_CLASS_ESNV) && sd->sex == SEX_FEMALE)
 				heal *= 2;	// ƒXƒpƒmƒr‚Ì‰Å‚ª’U“ß‚Éƒq[ƒ‹‚·‚é‚Æ2”{‚É‚È‚é
+#ifdef PRE_RENEWAL
 			if(skillid == AB_HIGHNESSHEAL)
 				heal = heal * (170 + 30 * skilllv) / 100;
+#endif
 			if(sc && sc->data[SC_KAITE].timer != -1
 #ifndef PRE_RENEWAL
 				&& atn_rand()%100 < 50
@@ -3461,10 +3467,12 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			if(skillid == AB_CHEAL) {
 				int heal;
 
-				heal = skill_fix_heal(&sd->bl, bl, skillid, skill_calc_heal(&sd->bl, lv));
 				if(sd->status.party_id == 0)
 					skill_area_temp[0] = 1;
+				heal = skill_fix_base_heal(&sd->bl, bl, skillid, lv, 1000 + skill_area_temp[0] * 25);
+#ifdef PRE_RENEWAL
 				heal += heal * skill_area_temp[0] * 25 / 1000;
+#endif
 
 				if(dstsd) {
 					if(dstsd->sc.data[SC_BERSERK].timer != -1)
@@ -5592,8 +5600,15 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 	case CD_DILECTIO_HEAL:			/* ƒfƒBƒŒƒNƒeƒBƒIƒq[ƒ‹ */
 		if(flag&1) {
 			int heallv = (sd)? pc_checkskill(sd, AL_HEAL): skilllv;
-			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, heallv));
-			heal = BIGNUM2INT((atn_bignumber)heal * (500 + skilllv * 25) / 100 + status_get_hplus(src) * skilllv);
+			int heal;
+#ifdef PRE_RENEWAL
+			heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, heallv));
+			heal = BIGNUM2INT((atn_bignumber)heal * (500 + skilllv * 25) / 100 + (atn_bignumber)status_get_hplus(src) * skilllv);
+#else
+			/* Šî‘b‚ÍK“¾ƒq[ƒ‹LvAH.Plus‚ÍØ‚èŽÌ‚Ä‘OŽ® */
+			heal = skill_fix_base_heal(src, bl, skillid, heallv, 1000);
+			heal = BIGNUM2INT(floor((atn_bignumber)heal * (600 + skilllv * 25) / 100) + (atn_bignumber)status_get_hplus(src) * skilllv);
+#endif
 			clif_misceffect_value(bl, 312, heal);
 			clif_misceffect_value(bl, 657, heal);
 			unit_heal(bl,heal,0,0,0);
@@ -6115,8 +6130,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 		}
 		break;
 	case SOA_TALISMAN_OF_PROTECTION:	/* ŽçŒì•„ */
-		{	// •t—^‚Æ“¯Žž‚Éƒq[ƒ‹
-			int heal = skill_fix_heal(src, bl, AL_HEAL, skill_calc_heal(src, skilllv));
+		{	// •t—^‚Æ“¯Žž‚Éƒq[ƒ‹iH.Plus‚Í%‰ÁŽZj
+			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, skilllv));
 			heal += (1000 + skilllv * 500 + status_get_crt(src) * 5 + ((sd)? pc_checkskill(sd,SOA_TALISMAN_MASTERY) * skilllv * 50: 0)) * status_get_lv(src) / 100;
 			clif_skill_nodamage(src,bl,skillid,skilllv,1);
 			clif_misceffect_value(bl, 312, heal);
@@ -6150,7 +6165,8 @@ int skill_castend_nodamage_id( struct block_list *src, struct block_list *bl,int
 			clif_misceffect_value(bl, 657, skill_area_temp[0]);
 			unit_heal(bl,skill_area_temp[0],0,0,0);
 		} else {
-			int heal = skill_fix_heal(src, bl, AL_HEAL, skill_calc_heal(src, skilllv));
+			/* H.Plus‚Í%‰ÁŽZ */
+			int heal = skill_fix_heal(src, bl, skillid, skill_calc_heal(src, skilllv));
 			int ar = skill_get_area(skillid,skilllv);
 			sc = status_get_sc(src);
 			if((sd && pc_checkskill(sd,SH_COMMUNE_WITH_KI_SUL)) || (sc && sc->data[SC_TEMPORARY_COMMUNION].timer != -1)) {

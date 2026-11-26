@@ -47,6 +47,7 @@
 #include "clif.h"
 #include "searchstore.h"
 #include "pc.h"
+#include "emotion_pack.h"
 #include "cashshop.h"
 #include "stylist.h"
 #include "npc.h"
@@ -16190,6 +16191,19 @@ void clif_guild_xy(struct map_session_data *sd)
  * ƒGƒ‚[ƒVƒ‡ƒ“
  *------------------------------------------
  */
+static void clif_emotion_ex(struct block_list *bl, int type, int group_id)
+{
+	unsigned char buf[16];
+
+	nullpo_retv(bl);
+
+	WBUFW(buf,0) = 0xbea;
+	WBUFL(buf,2) = bl->id;
+	WBUFW(buf,6) = (unsigned short)group_id;
+	WBUFW(buf,8) = (unsigned short)type;
+	clif_send(buf, (packet_db[0xbea].len > 0) ? packet_db[0xbea].len : 10, bl, AREA);
+}
+
 void clif_emotion(struct block_list *bl,int type)
 {
 	unsigned char buf[8];
@@ -21055,6 +21069,7 @@ static void clif_parse_LoadEndAck(int fd,struct map_session_data *sd, int cmd)
 		clif_skillinfoblock(sd);
 #endif
 		clif_send_hotkeyAll(sd);
+		clif_emotion_expansion_list(sd);
 		clif_send_partyconfig(sd);
 		clif_send_config(sd);
 		clif_updatestatus(sd,SP_NEXTBASEEXP);
@@ -21524,27 +21539,135 @@ static void clif_parse_ChangeDir(int fd,struct map_session_data *sd, int cmd)
  *
  *------------------------------------------
  */
-static void clif_parse_Emotion(int fd,struct map_session_data *sd, int cmd)
+static void clif_process_emotion(struct map_session_data *sd, int group_id, int emotion_id, int extended)
 {
+	unsigned int tick;
+
 	nullpo_retv(sd);
+	if(emotion_id < 0)
+		return;
 
 	if(battle_config.basic_skill_check == 0 || pc_checkskill(sd,NV_BASIC) >= 2 || pc_checkskill(sd,SU_BASIC_SKILL)) {
-		unsigned int tick = gettick();
+		tick = gettick();
+		if(DIFF_TICK(tick, sd->anti_hacker.emotion_delay_tick) <= 0)
+			return;
+		sd->anti_hacker.emotion_delay_tick = tick + 1000;
 
-		// anti hacker
-		if(DIFF_TICK(tick, sd->anti_hacker.emotion_delay_tick) > 0) {
-			sd->anti_hacker.emotion_delay_tick = tick + 1000;
-
-			WFIFOW(fd,0)=0xc0;
-			WFIFOL(fd,2)=sd->bl.id;
-			WFIFOB(fd,6)=RFIFOB(fd,GETPACKETPOS(cmd,0));
-			clif_send(WFIFOP(fd,0),packet_db[0xc0].len,&sd->bl,AREA);
+		if(group_id > 0 && (!emotion_pack_can_use(sd, group_id) ||
+		   !emotion_pack_has_emotion(group_id, emotion_id))) {
+			int fd = sd->fd;
+			WFIFOW(fd,0) = 0xbeb;
+			WFIFOW(fd,2) = group_id;
+			WFIFOW(fd,4) = emotion_id;
+			WFIFOB(fd,6) = 1;
+			WFIFOSET(fd, (packet_db[0xbeb].len > 0) ? packet_db[0xbeb].len : 7);
+			return;
 		}
+		if(extended)
+			clif_emotion_ex(&sd->bl, emotion_id, group_id);
+		else
+			clif_emotion(&sd->bl, emotion_id);
 	} else {
 		clif_skill_fail(sd,NV_BASIC,SKILLFAIL_LEVEL,1,0);
 	}
+}
 
-	return;
+static void clif_parse_Emotion(int fd,struct map_session_data *sd, int cmd)
+{
+	nullpo_retv(sd);
+	(void)fd;
+	clif_process_emotion(sd, 0, RFIFOB(fd,GETPACKETPOS(cmd,0)), 0);
+}
+
+static void clif_parse_Emotion2(int fd,struct map_session_data *sd, int cmd)
+{
+	int group_id, emotion_id;
+
+	nullpo_retv(sd);
+	(void)fd;
+	group_id = RFIFOW(fd, GETPACKETPOS(cmd,0));
+	emotion_id = RFIFOW(fd, GETPACKETPOS(cmd,1));
+	clif_process_emotion(sd, group_id, emotion_id, 1);
+}
+
+void clif_emotion_expansion_list(struct map_session_data *sd)
+{
+	int fd, i;
+	int offset;
+
+	nullpo_retv(sd);
+	if(PACKETVER < 20230705 || !battle_config.feature_emotion_cash)
+		return;
+	if(!sd->state.accountreg_ready)
+		return;
+
+	fd = sd->fd;
+	WFIFOW(fd,0) = 0xbf6;
+	WFIFOL(fd,4) = (unsigned int)time(NULL);
+	WFIFOW(fd,8) = 9 * 60; // UTC+09:00
+	offset = 10;
+
+	// Basic emotion pack (ID 0).
+	WFIFOW(fd,offset) = 0;
+	WFIFOB(fd,offset + 2) = 0;
+	WFIFOL(fd,offset + 3) = 0;
+	offset += 7;
+	for(i = 1; i <= EMOTION_PACK_ID_MAX; i++) {
+		unsigned int expire;
+
+		if(emotion_pack_search(i) == NULL)
+			continue;
+		if(!emotion_pack_owned(sd, i))
+			continue;
+		expire = emotion_pack_expire(sd, i);
+		WFIFOW(fd, offset) = (unsigned short)i;
+		WFIFOB(fd, offset + 2) = (expire > 0) ? 1 : 0;	/* 0=permanent, 1=rental */
+		WFIFOL(fd, offset + 3) = expire;
+		offset += 7;
+	}
+	WFIFOW(fd,2) = (unsigned short)offset;
+	WFIFOSET(fd, offset);
+}
+
+void clif_emotion_pack_acquired(struct map_session_data *sd, int pack_id)
+{
+	unsigned int expire;
+	int fd;
+
+	nullpo_retv(sd);
+	if(PACKETVER < 20230705 || !battle_config.feature_emotion_cash)
+		return;
+
+	fd = sd->fd;
+	expire = emotion_pack_expire(sd, pack_id);
+	WFIFOW(fd,0) = 0xbed;
+	WFIFOW(fd,2) = (unsigned short)pack_id;
+	WFIFOB(fd,4) = expire > 0;
+	WFIFOL(fd,5) = expire;
+	WFIFOSET(fd,9);
+
+	clif_emotion_expansion_list(sd);
+}
+
+static void clif_parse_BuyEmotionPack(int fd,struct map_session_data *sd, int cmd)
+{
+	int pack_id, result;
+
+	nullpo_retv(sd);
+	if(PACKETVER < 20230705 || !battle_config.feature_emotion_cash)
+		return;
+
+	pack_id = RFIFOW(fd, GETPACKETPOS(cmd,0));
+	/* Use server catalog terms. The remaining request fields are unverified. */
+	result = emotion_pack_buy(sd, pack_id);
+	if(result < 0) {
+		clif_emotion_pack_acquired(sd, pack_id);
+		return;
+	}
+	WFIFOW(fd,0) = 0xbee;
+	WFIFOW(fd,2) = (unsigned short)pack_id;
+	WFIFOB(fd,4) = (unsigned char)result;
+	WFIFOSET(fd, (packet_db[0xbee].len > 0) ? packet_db[0xbee].len : 5);
 }
 
 /*==========================================
@@ -27747,7 +27870,8 @@ static int packetdb_readdb_sub(char *line, int ln)
 		{ clif_parse_MapMove,                     "mapmove"                   },
 		{ clif_parse_ChangeDir,                   "changedir"                 },
 		{ clif_parse_Emotion,                     "emotion"                   },
-		{ clif_parse_Emotion,                     "emotion2"                  },
+		{ clif_parse_Emotion2,                    "emotion2"                  },
+		{ clif_parse_BuyEmotionPack,              "buyemotionpack"            },
 		{ clif_parse_HowManyConnections,          "howmanyconnections"        },
 		{ clif_parse_ActionRequest,               "actionrequest"             },
 		{ clif_parse_Restart,                     "restart"                   },

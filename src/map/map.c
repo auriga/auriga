@@ -49,6 +49,7 @@
 #include "intif.h"
 #include "npc.h"
 #include "pc.h"
+#include "emotion_pack.h"
 #include "cashshop.h"
 #include "stylist.h"
 #include "bonus.h"
@@ -3017,6 +3018,7 @@ void do_final(void)
 	do_final_script();
 	stylist_clear();
 	do_final_cashshop();
+	do_final_emotion_pack();
 	do_final_itemdb();
 	do_final_skill();
 	do_final_storage();
@@ -3174,6 +3176,7 @@ int do_init(int argc,char *argv[])
 	do_init_script();	// parse_script ‚ğŒÄ‚Ño‚·‘O‚É‚±‚ê‚ğŒÄ‚Ô
 	do_init_skill();	// skill_db‚ğQÆ‚·‚é‚Ì‚Åpc,homun,merc,guild,npc‚æ‚èæ
 	do_init_itemdb();
+	do_init_emotion_pack();
 	do_init_cashshop();
 	stylist_clear();
 	do_init_quest();

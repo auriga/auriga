@@ -163,6 +163,7 @@ extern struct Battle_Config {
 	int pet_rename;
 	int feature_petevolution;
 	int feature_cashshop;
+	int feature_emotion_cash;
 	int feature_stylist;
 	int feature_search_stores;
 	int searchstore_querydelay;
