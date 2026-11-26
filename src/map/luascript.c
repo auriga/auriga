@@ -41,6 +41,7 @@
 #include "itemdb.h"
 #include "achieve.h"
 #include "cashshop.h"
+#include "emotion_pack.h"
 #include "stylist.h"
 #include "clif.h"
 #include "luascript.h"
@@ -669,6 +670,31 @@ static int luafunc_InsertAchieveLevelDB(lua_State *NL)
 	return 1;
 }
 
+static int luafunc_ClearEmotionPack(lua_State *NL)
+{
+	emotion_pack_clear();
+	lua_pushboolean(NL, 1);
+	return 1;
+}
+
+static int luafunc_InsertEmotionPack(lua_State *NL)
+{
+	int id, price, item_id, result;
+	int start_date, end_date, duration;
+
+	id = luaL_checkint(NL, 1);
+	price = luaL_checkint(NL, 2);
+	item_id = luaL_checkint(NL, 3);
+	start_date = luaL_optint(NL, 4, 0);
+	end_date = luaL_optint(NL, 5, 0);
+	duration = luaL_optint(NL, 6, 0);
+
+	result = start_date >= 0 && end_date >= 0 && duration >= 0 && item_id >= 0 &&
+		emotion_pack_insert(id, price, item_id, start_date, end_date, duration);
+	lua_pushboolean(NL, result != 0);
+	return 1;
+}
+
 static int luafunc_ClearCashshop(lua_State *NL)
 {
 	cashshop_clear();
@@ -721,6 +747,8 @@ const struct Lua_function luafunc[] = {
 	{"InsertAchieveLevelDB",luafunc_InsertAchieveLevelDB},
 
 	{"ClearCashshop",luafunc_ClearCashshop},
+	{"ClearEmotionPack",luafunc_ClearEmotionPack},
+	{"InsertEmotionPack",luafunc_InsertEmotionPack},
 	{"InsertCashshopItem",luafunc_InsertCashshopItem},
 	{"ClearStylist",luafunc_ClearStylist},
 	{"InsertStylistEntry",luafunc_InsertStylistEntry},

@@ -622,7 +622,7 @@ struct map_session_data {
 	int def,def2,mdef,mdef2,critical,matk1,matk2;
 	int patk,smatk,res,mres,hplus,crate;
 	int atk_ele,def_ele,star,overrefine;
-	int castrate,fixcastrate,fixcastrate_,hprate,sprate,dsprate;
+	int castrate,fixcastrate,fixcastrate_,fixcastrate_increase,hprate,sprate,dsprate;
 	int addele[ELE_MAX],addrace[RCT_MAX],addenemy[EMY_MAX],addsize[MAX_SIZE_FIX];
 	int skill_eleweapon_dmgup[ELE_MAX],skill_elemagic_dmgup[ELE_MAX];
 	int subele[ELE_MAX],subrace[RCT_MAX],subenemy[EMY_MAX],subsize[MAX_SIZE_FIX];

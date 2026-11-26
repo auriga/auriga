@@ -1014,7 +1014,8 @@ int skill_unit_onplace_timer(struct skill_unit *src,struct block_list *bl,unsign
 			int hp = 0;
 			int sp = 0;
 			if(sg->val1%2 == 0) {
-				hp = skill_fix_heal(ss, bl, AL_HEAL, skill_calc_heal(ss, sg->skill_lv));
+				/* H.Plus‚Í%‰ÁŽZ */
+				hp = skill_fix_heal(ss, bl, sg->skill_id, skill_calc_heal(ss, sg->skill_lv));
 				hp += (1000 + sg->skill_lv * 4000 + status_get_crt(ss) * 5 + ((sd)? pc_checkskill(sd,SOA_TALISMAN_MASTERY) * sg->skill_lv * 50: 0)) * status_get_lv(ss) / 100;
 			}
 			if(sg->val1%3 == 0) {

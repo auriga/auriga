@@ -3038,3 +3038,24 @@ S 0ae8
 
 R 0b64 <len>.w <IsFirstPage>.B <IsNexPage>.B <RemainedSearchCnt>.B { <SSI_ID>.l <ID>.l <StoreName>.80B <item_id>.l <item_type>.B <price>.l <count>.w <card>.4l }.142B
 	露店検索システム検索応答
+
+S 0be9 <pack_id>.w <emotion_id>.w
+	追加エモーション使用要求
+
+R 0bea <ID>.l <pack_id>.w <emotion_id>.w
+	追加エモーション表示
+
+R 0beb <pack_id>.w <emotion_id>.w <result>.B
+	追加エモーション使用失敗
+
+S 0bec <pack_id>.w <unknown>.5B
+	追加エモーション購入要求
+
+R 0bed <pack_id>.w <rented>.B <expire>.l
+	追加エモーション獲得通知 (rented: 0=無期限、1=レンタル。expire: UNIX時刻、無期限の場合は0)
+
+R 0bee <pack_id>.w <result>.B
+	追加エモーション購入失敗
+
+R 0bf6 <len>.w <server_time>.l <timezone_minutes>.w { <pack_id>.w <rented>.B <expire>.l }.7B*
+	追加エモーション所持一覧 (基本パックのIDは0)

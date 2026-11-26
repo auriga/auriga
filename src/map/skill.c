@@ -6459,7 +6459,7 @@ int skill_castfix(struct block_list *bl, int skillid, int casttime, int fixedtim
 						reduce_time2 = (reduce_time2 < sd->skill_fixcastrate.rate[i])? sd->skill_fixcastrate.rate[i]: reduce_time2;
 				}
 			}
-			reduce_time2 = ((reduce_time2 < sd->fixcastrate)? sd->fixcastrate: reduce_time2) + sd->fixcastrate_;
+			reduce_time2 = ((reduce_time2 < sd->fixcastrate)? sd->fixcastrate: reduce_time2) + sd->fixcastrate_ - sd->fixcastrate_increase;
 		}
 
 		if(sc) {
@@ -10531,7 +10531,7 @@ int skill_reproduce(struct map_session_data* sd,int skillid,int skilllv)
  * 回復量補正
  *------------------------------------------
  */
-int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal)
+static int skill_fix_heal_internal(struct block_list *src, struct block_list *bl, int skill_id, int heal, int heal_lv, int multiplier_per_mille)
 {
 	struct map_session_data *sd = NULL, *tsd = NULL;
 	struct status_change *sc = NULL, *tsc = NULL;
@@ -10549,7 +10549,8 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 	}
 
 	// H.Plusによるヒール効果向上
-	rate += status_get_hplus(src);
+	if(heal_lv == 0 && skill_id != SU_FRESHSHRIMP && skill_id != SU_BUNCHOFSHRIMP)
+		rate += status_get_hplus(src);
 
 	if(sc && sc->data[SC_OFFERTORIUM].timer != -1)
 		rate += sc->data[SC_OFFERTORIUM].val1 * 30;
@@ -10584,14 +10585,41 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 		rate += skill;
 #endif
 
-	if(rate > 0)
+	if(heal_lv > 0) {
+		/* ヒール／ハイネス／コルセオ／ディレクティオ相当:
+		 * H.Plus分は基礎回復量を切り捨てる前の式から求める。 */
+		atn_bignumber bonus = ((atn_bignumber)status_get_lv(src) + status_get_int(src))
+		                    * 3 * heal_lv * status_get_hplus(src);
+		bonus += (atn_bignumber)heal * rate * 5;
+		if(bonus > 0)
+			heal = BIGNUM2INT((atn_bignumber)heal + floor(bonus / 500.0));
+	} else if(rate > 0) {
 		heal += heal * rate / 100;
+	}
 
 #ifndef PRE_RENEWAL
-	// Matkの加算
-	if(skill_id == AL_HEAL || skill_id == AB_CHEAL || skill_id == AB_HIGHNESSHEAL || skill_id == CD_DILECTIO_HEAL)
+	/* Matk加算対象: ヒール系（切り捨て前H.Plus）と守護符／城隍堂／タートル（%H.Plus） */
+	switch(skill_id) {
+	case AL_HEAL:
+	case AB_CHEAL:
+	case AB_HIGHNESSHEAL:
+	case CD_DILECTIO_HEAL:
+	case SOA_TALISMAN_OF_PROTECTION:
+	case SOA_TOTEM_OF_TUTELARY:
+	case SH_KI_SUL_WATER_SPRAYING:
 		heal += battle_calc_base_magic_damage(src);
+		break;
+	case SU_FRESHSHRIMP:
+		heal += battle_calc_base_magic_damage(src) / 2;
+		break;
+	case SU_BUNCHOFSHRIMP:
+		heal += battle_calc_base_magic_damage(src) / 4;
+		break;
+	}
 #endif
+
+	if(multiplier_per_mille != 1000)
+		heal = BIGNUM2INT((atn_bignumber)heal * multiplier_per_mille / 1000);
 
 	if(tsd) {
 		// ブレイクスルー
@@ -10620,6 +10648,30 @@ int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, 
 #endif
 
 	return heal;
+}
+
+int skill_fix_heal(struct block_list *src, struct block_list *bl, int skill_id, int heal)
+{
+	return skill_fix_heal_internal(src, bl, skill_id, heal, 0, 1000);
+}
+
+int skill_fix_base_heal(struct block_list *src, struct block_list *bl, int skill_id, int skill_lv, int multiplier_per_mille)
+{
+	int base_lv = skill_lv;
+	int hplus_lv = skill_lv;
+
+	nullpo_retr(0, src);
+#ifdef PRE_RENEWAL
+	(void)multiplier_per_mille;
+	if(skill_id == AB_HIGHNESSHEAL)
+		base_lv = 10;
+	return skill_fix_heal(src, bl, skill_id, skill_calc_heal(src, base_lv));
+#else
+	/* ハイネスヒール: 基礎回復はHeal Lv10換算、H.PlusはスキルLvを使用 */
+	if(skill_id == AB_HIGHNESSHEAL)
+		base_lv = 10;
+	return skill_fix_heal_internal(src, bl, skill_id, skill_calc_heal(src, base_lv), hplus_lv, multiplier_per_mille);
+#endif
 }
 
 /*----------------------------------------------------------------------------

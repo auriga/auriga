@@ -1,4 +1,21 @@
 ----------------------------------------
+//1635 [2026/11/25] by refis
+
+・追加エモーションの購入・使用・レンタルに対応（PACKETVER 20230705以降）。
+　db/emotion_pack.luaで商品を定義し、無期限パックは1個のアカウント変数にまとめ、レンタル期限は個別に保存する。
+　（emotion_pack.*, clif.*, intif.c, luascript.c, map.c, atcommand.*, battle.*, db/*, conf/*）
+
+・[RE]各種耐性と完全回避を95%までに制限。
+・固定詠唱の汎用ボーナスは短縮率・延長率それぞれの最大値を使用するよう修正。
+　（battle.c, status.c, bonus.c）
+
+・特性サブステータスの計算位置と端数処理を修正。
+　P.Atk、S.Matk、Res、Mres、ヒール系スキルのH.Plusと倍率を調整。
+　H.Plusはヒール／ハイネス／コルセオ／ディレクティオは切り捨て前式、
+　守護符／城隍堂／タートルスプリンクラーは%加算、新鮮なエビ／エビ三昧は非対象。
+　（battle.c, skill.*, skill_castend_support.c, skill_unit_onplace.c）
+
+----------------------------------------
 //1634 [2026/11/17] by refis
 
 ・販売露店・買取露店の検索とsearchstores命令を追加（PACKETVER 20100706以降、RE基準）。

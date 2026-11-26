@@ -1559,6 +1559,8 @@ static int intif_parse_AccountReg(int fd)
 
 	// —a‹àî•ñ‚ðŠi”[
 	sd->deposit = pc_readaccountreg(sd,"#PC_DEPOSIT");
+	if(sd->bl.prev)
+		clif_emotion_expansion_list(sd);
 
 	return 0;
 }

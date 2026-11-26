@@ -1626,11 +1626,13 @@ int bonus_param2(struct map_session_data *sd,int type,int type2,int val)
 		}
 		break;
 	case SP_FIXCASTRATE:
-		if(!val) {
+		if(val) {
+			sd->fixcastrate_ -= type2;
+		} else if(type2 < 0) {
 			if(sd->fixcastrate < -(type2))
 				sd->fixcastrate = -(type2);
-		} else {
-			sd->fixcastrate_ += -(type2);
+		} else if(sd->fixcastrate_increase < type2) {
+			sd->fixcastrate_increase = type2;
 		}
 		break;
 	case SP_ADD_FIX_CAST_RATE:

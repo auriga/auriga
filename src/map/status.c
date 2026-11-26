@@ -1282,6 +1282,10 @@ int status_get_flee2(struct block_list *bl)
 	}
 
 	if(flee2 < 1) flee2 = 1;
+#ifndef PRE_RENEWAL
+	if(bl->type == BL_PC && flee2 > 950)
+		flee2 = 950;
+#endif
 	return flee2;
 }
 

@@ -237,6 +237,8 @@ void clif_clearchat(struct chat_data *cd, int fd);
 void clif_leavechat(struct chat_data* cd, struct map_session_data *sd, unsigned char flag);
 void clif_changechatstatus(struct chat_data*);
 void clif_changedir( struct block_list *bl, int headdir, int dir );
+void clif_emotion_pack_acquired(struct map_session_data *sd, int pack_id);
+void clif_emotion_expansion_list(struct map_session_data *sd);
 void clif_emotion(struct block_list *bl,int type);
 void clif_emotion_self(struct map_session_data *sd,struct block_list *bl,int type);
 void clif_talkiebox(struct block_list *bl,const char* talkie);
